@@ -1,0 +1,3 @@
+Notes including concepts, terminology and shorthands
+
+OZI: dependence of g_s(p) on momentum transferred. If inital en final states can be completely seperated by removing gluon lines, interaction supressed.
