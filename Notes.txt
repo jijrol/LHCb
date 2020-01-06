@@ -1,3 +1,8 @@
 Notes including concepts, terminology and shorthands
 
 OZI: dependence of g_s(p) on momentum transferred. If inital en final states can be completely seperated by removing gluon lines, interaction supressed.
+
+Dilepton mass term = (p^(mu)_1 + p^(mu)_2)^2. Bins determined by resonances mmurkying the signal.
+
+Cabbibo suppressed: CKM matrix favours same-family interactions.
+
