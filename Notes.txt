@@ -4,12 +4,14 @@ Notes including concepts, terminology and shorthands
 OZI: dependence of g_s(p) on momentum transferred. If inital en final states can be completely seperated 
 by removing gluon lines, interaction supressed.
 
-Dilepton mass term = (p^(mu)_1 + p^(mu)_2)^2. Bins determined by resonances mmurkying the signal.
+Dilepton mass term = (p^(mu)_1 + p^(mu)_2)^2. Bins determined by resonances murkying the signal.
 
 Cabbibo suppressed: CKM matrix favours same-family interactions.
 
 BSM effect candidates: leptoquarks, extended Higgs sector, extended gauge sector.
 
+Invariant mass: mass same in all reference frames (consider mass in opposite direction decays vs. same direction)
 
+Significant difference between Muon and Electron reconstruction is large bremsstrahlung energy loss of electrons.
 
 
