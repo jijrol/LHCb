@@ -14,4 +14,6 @@ Invariant mass: mass same in all reference frames (consider mass in opposite dir
 
 Significant difference between Muon and Electron reconstruction is large bremsstrahlung energy loss of electrons.
 
+GIM: Mechanism that describes absence of FCNC's
+
 
