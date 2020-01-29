@@ -1,0 +1,2 @@
+ssh -Y jrol@login.nikhef.nl
+ssh -X stbc-i1/2/3/4
