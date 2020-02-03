@@ -1,7 +1,7 @@
 # options
 from optparse import OptionParser
 parser = OptionParser()
-parser.add_option("-p", dest="particle", default="B+", type="string")
+parser.add_option("-p", dest="particle", default="B+", type="string")   
 parser.add_option("-f", dest="fracevents", default=1.0, type="float")
 parser.add_option("-r", dest="run", default=3, type="int")
 (options, args) = parser.parse_args()
