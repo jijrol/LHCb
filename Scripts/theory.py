@@ -95,11 +95,13 @@ print("#(B+  -> e+ nu_e)_SM = {0}".format(br_bu2enu*nbu))
 #Efficiency of >= 1 sensors = (0.00265 +/- 0.00025)%
 #Efficiency of >= 2 sensors = (0.00110 +/- 0.00016)%
 #Efficiency of >= 3 sensors = (0.00059 +/- 0.00012)%
+
 #maarten@maarten-XPS-13:~/LHCb/project/chargedB_reco$ python reco_estimate.py -p 'B+'
 #For particle 'B+' with m = 5279.33 MeV/c^2 and tau = 1.638 ps
 #Efficiency of >= 1 sensors = (0.31384 +/- 0.00597)%
 #Efficiency of >= 2 sensors = (0.14056 +/- 0.00400)%
 #Efficiency of >= 3 sensors = (0.08710 +/- 0.00315)%
+
 
 ef_bu_1 = uf(0.0031384,0.0000597)
 ef_bc_1 = uf(0.0000265,0.0000025)
