@@ -1,0 +1,57 @@
+BR(Bc+ -> tau+ nu_tau)_SM = (2.2491,0.1881)%
+BR(B+  -> tau+ nu_tau)_SM = (0.0088,0.0007)%
+BR(Ds+ -> tau+ nu_tau)_SM = (4.8605,0.9205)%
+
+BR(Bc+ -> tau+ ( -> mu+ nu_s ) nu_mu)_SM = 0.00391+/-0.00033
+BR(B+  -> tau+ ( -> mu+ nu_s ) nu_mu)_SM = (1.53+/-0.13)e-05
+BR(Ds+ -> tau+ ( -> mu+ nu_s ) nu_mu)_SM = 0.0085+/-0.0016
+
+BR(Bc+ -> tau+ ( -> e+ nu_s ) nu_mu)_SM  = 0.00401+/-0.00034
+BR(B+  -> tau+ ( -> e+ nu_s ) nu_mu)_SM  = (1.57+/-0.13)e-05
+BR(Ds+ -> tau+ ( -> e+ nu_s ) nu_mu)_SM  = 0.0087+/-0.0016
+
+BR(Bc+ -> mu+ nu_mu)_SM = (9.4+/-0.8)e-05
+BR(B+  -> mu+ nu_mu)_SM = (3.95+/-0.33)e-07
+BR(Ds+ -> mu+ nu_mu)_SM = 0.0050+/-0.0009
+
+BR(Bc+ -> e+ nu_e)_SM = (2.20+/-0.18)e-09
+BR(B+  -> e+ nu_e)_SM = (9.3+/-0.8)e-12
+BR(Ds+ -> e+ nu_e)_SM = (1.17+/-0.22)e-07
+
+#Bc+ for 1 fb-1 = 608999999.9999999
+#B+  for 1 fb-1 = 86999999999.99998
+#Ds+ for 1 fb-1 = 352999999999.99994
+
+For 5 fb-1, about a year of data taking in Run 3:
+#(Bc+ -> tau+ ( -> mu+ nu_s ) nu_mu)_SM = (1.19+/-0.10)e+07
+#(B+  -> tau+ ( -> mu+ nu_s ) nu_mu)_SM = (6.7+/-0.6)e+06
+#(Ds+ -> tau+ ( -> mu+ nu_s ) nu_mu)_SM = (1.49+/-0.28)e+10
+
+#(Bc+ -> mu+ nu_mu)_SM = (2.86+/-0.24)e+05
+#(B+  -> mu+ nu_mu)_SM = (1.72+/-0.14)e+05
+#(Ds+ -> mu+ nu_mu)_SM = (8.8+/-1.7)e+09
+
+#(Bc+ -> tau+ ( -> e+ nu_s ) nu_mu)_SM  = (1.22+/-0.10)e+07
+#(B+  -> tau+ ( -> e+ nu_s ) nu_mu)_SM  = (6.8+/-0.6)e+06
+#(Ds+ -> tau+ ( -> e+ nu_s ) nu_mu)_SM  = (1.53+/-0.29)e+10
+
+#(Bc+ -> e+ nu_e)_SM = 6.7+/-0.6
+#(B+  -> e+ nu_e)_SM = 4.02+/-0.33
+#(Ds+ -> e+ nu_e)_SM = (2.1+/-0.4)e+05
+
+For 5 fb-1, reaching at least 1 VELO sensor (about 1 year of Run 3):
+#(Bc+ -> tau+ ( -> mu+ nu_s ) nu_mu)_SM = (3.2+/-0.4)e+02
+#(B+  -> tau+ ( -> mu+ nu_s ) nu_mu)_SM = (2.09+/-0.18)e+04
+#(Ds+ -> tau+ ( -> mu+ nu_s ) nu_mu)_SM = (1.18+/-0.26)e+06
+
+#(Bc+ -> mu+ nu_mu)_SM = 7.6+/-1.0
+#(B+  -> mu+ nu_mu)_SM = (5.4+/-0.5)e+02
+#(Ds+ -> mu+ nu_mu)_SM = 55+/-8
+
+#(Bc+ -> tau+ ( -> e+ nu_s ) nu_mu)_SM  = (3.2+/-0.4)e+02
+#(B+  -> tau+ ( -> e+ nu_s ) nu_mu)_SM  = (2.14+/-0.18)e+04
+#(Ds+ -> tau+ ( -> e+ nu_s ) nu_mu)_SM  = (3.0+/-0.7)e+05
+
+#(Bc+ -> e+ nu_e)_SM = 0.000177+/-0.000022
+#(B+  -> e+ nu_e)_SM = 0.0126+/-0.0011
+#(Ds+ -> e+ nu_e)_SM = 16+/-4
