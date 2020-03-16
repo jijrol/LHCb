@@ -1,0 +1,15 @@
+B+ ->  { tau+ -> mu+ numu anti-nutau    } nutau 
+B+ ->  { tau+ -> e+ nue anti-nutau      } nutau
+B+ ->  { tau+ -> pi+ pi+ pi- anti-nutau } nutau  
+
+Bc+ -> { tau+ -> mu+ numu anti-nutau    } nutau
+Bc+ -> { tau+ -> e+ nue anti-nutau      } nutau
+Bc+ -> { tau+ -> pi+ pi+ pi- anti-nutau } nutau
+
+Ds+ -> { tau+ -> mu+ numu anti-nutau    } nutau 
+Ds+ -> { tau+ -> e+ nue anti-nutau      } nutau
+Ds+ -> { tau+ -> pi+ pi+ pi- anti-nutau } nutau  
+
+D+ ->  { tau+ -> mu+ numu anti-nutau    } nutau 
+D+ ->  { tau+ -> e+ nue anti-nutau      } nutau
+D+ ->  { tau+ -> pi+ pi+ pi- anti-nutau } nutau
