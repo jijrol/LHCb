@@ -84,10 +84,10 @@ for i in range(nEvents):
     h_nsuff2.Fill(ns>=2)
     h_nsuff3.Fill(ns>=3)
 
-print "For particle '{0}' with m = {1} MeV/c^2 and tau = {2} ps".format(name,mass,lifetime)
-print "Efficiency of >= 1 sensors = ({0:.5f} +/- {1:.5f})%".format(h_nsuff1.GetMean()*100.,h_nsuff1.GetMeanError()*100.)
-print "Efficiency of >= 2 sensors = ({0:.5f} +/- {1:.5f})%".format(h_nsuff2.GetMean()*100.,h_nsuff2.GetMeanError()*100.)
-print "Efficiency of >= 3 sensors = ({0:.5f} +/- {1:.5f})%".format(h_nsuff3.GetMean()*100.,h_nsuff3.GetMeanError()*100.)
+#print "For particle '{0}' with m = {1} MeV/c^2 and tau = {2} ps".format(name,mass,lifetime)
+#print "Efficiency of >= 1 sensors = ({0:.5f} +/- {1:.5f})%".format(h_nsuff1.GetMean()*100.,h_nsuff1.GetMeanError()*100.)
+#print "Efficiency of >= 2 sensors = ({0:.5f} +/- {1:.5f})%".format(h_nsuff2.GetMean()*100.,h_nsuff2.GetMeanError()*100.)
+#print "Efficiency of >= 3 sensors = ({0:.5f} +/- {1:.5f})%".format(h_nsuff3.GetMean()*100.,h_nsuff3.GetMeanError()*100.)
 
 # plot
 canv0 = R.TCanvas("canv0","canv0",0,0,600,400)
