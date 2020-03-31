@@ -7,7 +7,8 @@ import uproot
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import random 
+import random
+import cPickle
 
 if len(sys.argv) != 3:
     print("Give 2 arguments, first parent (Bplus, Bcplus, Dsplus or Dplus) then daughter(s) (mu, e or pipipi)")
@@ -24,14 +25,13 @@ minrange = 5100           # in mum
 maxrange = 84000          # in mum
 
 # All data stored in /project/bfys/jrol/RapidSim/decays/.../...
-path = "/project/bfys/jrol/RapidSim/decays/{0}/{0}2tau2{1}_tree.root".format(parent, daughter)
-tfile = uproot.open(path) 
+tpath = "/project/bfys/jrol/RapidSim/decays/{0}/{0}2tau2{1}_tree.root".format(parent, daughter)
+tfile = uproot.open(tpath) 
 ttree = tfile["DecayTree"]
 
 RS_df = ttree.pandas.df()
 
 print("Successfully loaded TTree, converted to pandas dataframe.")
-print(" ")
 
 # Set correct formatting IDS for RS_dataframe
 if daughter == "pipipi":
@@ -48,7 +48,6 @@ elif parent == "Dplus":
 elif parent == "Dsplus":
     mesonID = "Dsp"
 
-# Define functions
 def z_active(event):
     z_act = 0
     perp_distance = math.sqrt((event["{0}_0_vtxX_TRUE".format(mesonID)] - event["{0}_0_origX_TRUE".format(mesonID)])**2 + (event["{0}_0_vtxY_TRUE".format(mesonID)] - event["{0}_0_origY_TRUE".format(mesonID)])**2)
@@ -86,19 +85,29 @@ def angle(event):
     theta = (180 / math.pi) * np.arccos(np.dot(U, V) / (np.linalg.norm(U) * np.linalg.norm(V)))
     return theta
 
+def plotter(variable, domain, x, y, title, savepath):
+    plt.figure()
+    plt.hist(variable, bins=40, range=domain, log=True)
+    plt.ylabel(y)
+    plt.xlabel(x)
+    plt.title(title)
+    plt.savefig(savepath)
+
+def save_list(list_name, path):
+    with open(path, 'wb') as output:
+        pickle.dump(list_name, output, -1)
+    return None
+
+def load_list(path):
+    with open(path, 'rb') as input:
+        pickle.load(input)
+    return None
 
 # Set decay particle 'arrays'
 P      = []
+P_test = []
 PT     = []
-eta    = []
-IP     = []
-origX  = []
-origY  = []
-angles = []
-
-# Set parent particle 'arrays'
-distT  = []
-FD     = []
+PT_test= []
 
 j = 0
 for i in range(0, int(1 * len(RS_df.index))):
@@ -115,26 +124,33 @@ for i in range(0, int(1 * len(RS_df.index))):
         distT.append(math.sqrt((event["{0}_0_vtxX_TRUE".format(mesonID)] - event["{0}_0_origX_TRUE".format(mesonID)])**2 + (event["{0}_0_vtxY_TRUE".format(mesonID)] - event["{0}_0_origY_TRUE".format(mesonID)])**2))
         FD.append(event["{0}_0_FD_TRUE".format(mesonID)])
         j += 1
+    else:
+        P_test.append(event["{0}p_0_P_TRUE".format(decayID)])
+        PT_test.append(event["{0}p_0_PT_TRUE".format(decayID)])
+
     if (i % 10000) == 0:
         print(int(i / 10000), j, "hits")
-        
-def plotter(variable, domain, x, y, title, savepath):
-    plt.figure()
-    plt.hist(variable, bins=40, range=domain, log=True)
-    plt.ylabel(y)
-    plt.xlabel(x)
-    plt.title(title)
-    plt.savefig(savepath)
 
-plotter(P, (0, 200), "P (Gev/c)", "Counts", "{1} Momentum from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_P.pdf".format(parent, daughter))
-plotter(PT, (0, 50), "PT (Gev/c)", "Counts", "{1} Tranverse momentum from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_PT.pdf".format(parent, daughter))
-plotter(eta, (-4, 8), "eta", "Counts", "{1} Eta from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_eta.pdf".format(parent, daughter))
-plotter(IP, (0, 2000), "IP (microns)", "Counts", "{1} IP from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_IP.pdf".format(parent, daughter))
-plotter(origX, (-40000, 40000), "Spread (mum)", "Counts", "{1} Origin vertex spread (X) from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_origX.pdf".format(parent, daughter))
-plotter(origY, (-40000, 40000), "Spread (mum)", "Counts", "{1} Origin vertex spread (Y) from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_origY.pdf".format(parent, daughter))
+for variable in [P, PT]:
+    path = "/project/bfys/jrol/figures/data/{0}/{0}_{1}_{2}".format(parent, daughter, variable)
+    save_list("{0}_test".format(variable), path)
 
-plotter(distT, (0, 30000), "Distance (mum)", "Counts", "Perpendicular Distance of DV - {0}".format(parent), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_distT.pdf".format(parent, daughter))
-plotter(FD, (0, 50000), "Distance (mum)", "Counts", "Flight Distance - {0}".format(parent), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_FD.pdf".format(parent, daughter))
-plotter(angles, (0, 5), "Angle between momenta (degrees)", "Counts", "Origin and Final tracks-angle - {0} & {1}".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_angle.pdf".format(parent, daughter))
+for variable in [P, PT]:
+    path = "/project/bfys/jrol/figures/data/{0}/{0}_{1}_{2}".format(parent, daughter, variable)
+    "{0}_test2".format(variable) = load_list(path)
 
-print("Saved figures!")
+plotter(P, (0, 200), "P (Gev/c)", "Counts", "{1} Momentum from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/test/P_test_1velo.pdf")
+plotter(PT, (0, 50), "PT (Gev/c)", "Counts", "{1} Tranverse momentum from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/test/PT_test_1velo.pdf")
+plotter(P_test2, (0, 200), "P", "Counts", "0 velo hit", "/project/bfys/jrol/figures/test/P_test_0velo.pdf")
+plotter(PT_test2, (0, 50), "PT", "Counts", "0 velo hit", "/project/bfys/jrol/figures/test/PT_test_0velo.pdf")
+
+#plotter(eta, (-4, 8), "eta", "Counts", "{1} Eta from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_eta.pdf".format(parent, daughter))
+#plotter(IP, (0, 2000), "IP (microns)", "Counts", "{1} IP from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_IP.pdf".format(parent, daughter))
+#plotter(origX, (-40000, 40000), "Spread (mum)", "Counts", "{1} Origin vertex spread (X) from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_origX.pdf".format(parent, daughter))
+#plotter(origY, (-40000, 40000), "Spread (mum)", "Counts", "{1} Origin vertex spread (Y) from parent {0}_1_velo".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_origY.pdf".format(parent, daughter))
+
+#plotter(distT, (0, 30000), "Distance (mum)", "Counts", "Perpendicular Distance of DV - {0}".format(parent), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_distT.pdf".format(parent, daughter))
+#plotter(FD, (0, 50000), "Distance (mum)", "Counts", "Flight Distance - {0}".format(parent), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_FD.pdf".format(parent, daughter))
+#plotter(angles, (0, 5), "Angle between momenta (degrees)", "Counts", "Origin and Final tracks-angle - {0} & {1}".format(parent, daughter), "/project/bfys/jrol/figures/1velo/{0}/{0}_{1}_angle.pdf".format(parent, daughter))
+
+#print("Saved figures!")
