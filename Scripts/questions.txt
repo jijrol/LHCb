@@ -1,9 +1,0 @@
-in function BR_P2LNU: what does the function do?
-
-what is f_p? m_p is mass particle, t_p is lifetime particle
-what is vckm, m_L
-
-for Bc, what is v_cb and f_bc, why cb reversed? i.d. for B+
-
-why also interested in Ds+ meson in reco_estimate.py?
-
