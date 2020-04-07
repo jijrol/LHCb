@@ -21,44 +21,43 @@ def load_dict(parent, daughter, hits):
     some = load_obj(path)
     return some
 
-def plot_parents(variable, daughter, hits):
-    parents = ["Bplus", "Bcplus", "Dplus", "Dsplus"]
+def plot_parents(variable, daughter, hit):
     main_dict = dict.fromkeys(parents, None)
     plt.figure()
     for parent in parents:
-        main_dict[parent] = load_dict(parent, daughter, hits)
+        main_dict[parent] = load_dict(parent, daughter, hit)
         list = main_dict[parent][variable]
         weights = np.ones(len(list)) / len(list)
         plt.hist(list, bins=50, log=False, label=parent,
         weights=weights, histtype="step", range=x_range_dict[variable])
     plt.ylabel("Probability density")
     plt.xlabel(x_label_dict[variable])
-    plt.title("Daughter {0} with parents - {1}".format(daughter, variable))
+    plt.title("Daughter {0} with parents: {1} - {2} hit(s)".format(daughter, variable, hit))
     plt.legend()
-    plt.show()
-    savepath = "~/Documents/LHCb/figures/parent_comp/{0}_{1}".format(daughter, variable)
-    #plt.savefig(savepath)
+    #plt.show()
+    savepath = "C:/Users/janro/Documents/LHCb/figures/parents_comp/{0}_{1}_{2}hit".format(daughter, variable, hit)
+    plt.savefig(savepath)
+    plt.close()
 
-def plot_daughters(variable, parent, hits):
-    daughters = ["e", "mu", "pipipi"]
+def plot_daughters(variable, parent, hit):
     main_dict = dict.fromkeys(daughters, None)
     plt.figure()
     for daughter in daughters:
-        main_dict[daughter] = load_dict(parent, daughter, hits)
+        main_dict[daughter] = load_dict(parent, daughter, hit)
         list = main_dict[daughter][variable]
         weights = np.ones(len(list)) / len(list)
         plt.hist(list, bins=50, log=False, label=daughter,
         weights=weights, histtype="step", range=x_range_dict[variable])
     plt.ylabel("Probability density")
     plt.xlabel(x_label_dict[variable])
-    plt.title("Daughters of {0} - {1}".format(parent, variable))
+    plt.title("Daughters of {0}: {1} - {2} hit(s)".format(parent, variable, hit))
     plt.legend()
-    plt.show()
-    savepath = "~/Documents/LHCb/figures/daughter_comp/{0}_{1}.pdf".format(parent, variable)
-    #plt.savefig(savepath)
+    #plt.show()
+    savepath = "C:/Users/janro/Documents/LHCb/figures/daughters_comp/{0}_{1}_{2}hit.pdf".format(parent, variable, hit)
+    plt.savefig(savepath)
+    plt.close()
 
 def plot_hits(variable, parent, daughter):
-    hits = ["0", "1"]
     main_dict = dict.fromkeys(hits, None)
     plt.figure()
     for hit in hits:
@@ -71,9 +70,15 @@ def plot_hits(variable, parent, daughter):
     plt.xlabel(x_label_dict[variable])
     plt.title("{0} to {1} - var: {2} - 0 hits vs. 1+ hit".format(parent, daughter, variable))
     plt.legend()
-    plt.show()
-    savepath = "~/Documents/LHCb/figures/hits_comp/{0}_{1}_{2}.pdf".format(parent, daughter, variable)
+    #plt.show()
+    savepath = "C:/Users/janro/Documents/LHCb/figures/hits_comp/{0}_{1}_{2}.pdf".format(parent, daughter, variable)
+    plt.savefig(savepath)
+    plt.close()
 
+parents   = ["Bplus", "Bcplus", "Dplus", "Dsplus"]
+daughters = ["e", "mu", "pipipi"]
+hits      = ["0", "1"]
+variables = ["P", "PT", "eta", "IP", "angle", "FD"]
 
 x_label_dict = {"P"     : "Momentum of daughter (Gev/c)", 
 				"PT"    : "Transverse momentum of daughter (Gev/c)", 
@@ -88,6 +93,20 @@ x_range_dict = {"P"     : (0, 150),
                 "angle" : (0, 2),
                 "FD"    : (15000, 50000)}
 
-#plot_daughters("P", "Bcplus", 1)
-#plot_parents("PT", "mu", 1)
-plot_hits("angle", "Bplus", "mu")
+for parent in parents:
+    print("1")
+    for hit in hits:
+        for variable in variables:
+            plot_daughters(variable, parent, hit)
+
+for daughter in daughters:
+    print("2")
+    for hit in hits:
+        for variable in variables:
+            plot_parents(variable, daughter, hit)
+
+for parent in parents:
+    print("3")
+    for daughter in daughters:
+        for variable in variables:
+            plot_hits(variable, parent, daughter)
