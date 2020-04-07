@@ -35,7 +35,7 @@ def plot_parents(variable, daughter, hit):
     plt.title("Daughter {0} with parents: {1} - {2} hit(s)".format(daughter, variable, hit))
     plt.legend()
     #plt.show()
-    savepath = "C:/Users/janro/Documents/LHCb/figures/parents_comp/{0}_{1}_{2}hit".format(daughter, variable, hit)
+    savepath = "C:/Users/janro/Documents/LHCb/figures/parents_comp/{0}_{1}_{2}hit.pdf".format(daughter, variable, hit)
     plt.savefig(savepath)
     plt.close()
 
@@ -93,11 +93,11 @@ x_range_dict = {"P"     : (0, 150),
                 "angle" : (0, 2),
                 "FD"    : (15000, 50000)}
 
-for parent in parents:
-    print("1")
-    for hit in hits:
-        for variable in variables:
-            plot_daughters(variable, parent, hit)
+#for parent in parents:
+#    print("1")
+#    for hit in hits:
+#        for variable in variables:
+#            plot_daughters(variable, parent, hit)
 
 for daughter in daughters:
     print("2")
@@ -105,8 +105,8 @@ for daughter in daughters:
         for variable in variables:
             plot_parents(variable, daughter, hit)
 
-for parent in parents:
-    print("3")
-    for daughter in daughters:
-        for variable in variables:
-            plot_hits(variable, parent, daughter)
+#for parent in parents:
+#    print("3")
+#    for daughter in daughters:
+#        for variable in variables:
+#            plot_hits(variable, parent, daughter)
