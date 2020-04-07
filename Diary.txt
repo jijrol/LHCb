@@ -1,0 +1,17 @@
+From January to April 1st, 2020:
+
+After reading into the subject, the first order of magnitude calculations were made based on reco_estimate.py and theory.py by Maarten.
+I followed these, then ran my own first simulations. First results showed that we needed a lot more data for Bc+ and Ds+ events.
+As these events have a lot lower efficiency than B+ or D+ decays. Therefore we ended up choosing to simulate 1.0E8 events of each,
+to keep the relative efficiencies correct. They were cut on FD > 15 mm & 2 < eta < 5. First analysis was written under Data/rapidsim_analysis.doc.
+To properly visualize data, dictionaries of 0 hit or 1+ hit data were pickled and saved, in order to plot them offline.
+While running the simulations, original efficiencies turned out to deviate from own current results. To investigate, simulated test tree.root,
+and found that Maarten's and my script get the same efficiencies, but different from the previous result. To investigate further,
+we decided to run another test simulation for B+ -> (J/psi(1S) -> mu+ mu-) + K+, since that result is well known. To be continued.
+
+ - Wondered why the Bc+ channel would be such a good candidate for this whole chargedB-tracking business. Final state is very clean: i.e. no colour charge.
+   But doesn't the same hold for B+ decays? We'll have to find out. 
+
+For now graphing: parent_comp, daughter_comp and hit_comp and efficiency check are on the to-do list.
+
+Week 15 - April 6 to April 10:

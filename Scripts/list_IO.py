@@ -38,7 +38,6 @@ if daughter == "pipipi":
     decayID = "pi"
 else:
     decayID = daughter  
-
 if   parent == "Bplus":
     mesonID = "Bp"
 elif parent == "Bcplus":
