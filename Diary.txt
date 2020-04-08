@@ -15,3 +15,8 @@ we decided to run another test simulation for B+ -> (J/psi(1S) -> mu+ mu-) + K+,
 For now graphing: parent_comp, daughter_comp and hit_comp and efficiency check are on the to-do list.
 
 Week 15 - April 6 to April 10:
+
+Figures done, but J/Psi(1S) is not supported in RapidSim, so we might look at another decay instead. Correction: J/Psi(1S) == J/Psi
+Also, following variables should be in root file:  Bp_BTracking_nVeloSensors = 0; Bp_BTracking_nVeloClusters = 0; Bp_BTracking_nVeloClusterCandidates = 0;
+ Bp_BTracking_nVeloClusterHits = 0; Bp_BTracking_totalHitChi2 = -1.
+First one is relevant to find efficiency.
