@@ -27,8 +27,11 @@ def plot_parents(variable, daughter, hit):
     for parent in parents:
         main_dict[parent] = load_dict(parent, daughter, hit)
         list = main_dict[parent][variable]
+        for event in list:
+            if event < x_range_dict[variable][0] or event >= x_range_dict[variable][1]:
+                list.remove(event)
         weights = np.ones(len(list)) / len(list)
-        plt.hist(list, bins=50, log=False, label=parent,
+        plt.hist(list, bins=bins, log=False, label=parent,
         weights=weights, histtype="step", range=x_range_dict[variable])
     plt.ylabel("Probability density")
     plt.xlabel(x_label_dict[variable])
@@ -45,8 +48,11 @@ def plot_daughters(variable, parent, hit):
     for daughter in daughters:
         main_dict[daughter] = load_dict(parent, daughter, hit)
         list = main_dict[daughter][variable]
+        for event in list:
+            if event < x_range_dict[variable][0] or event >= x_range_dict[variable][1]:
+                list.remove(event)
         weights = np.ones(len(list)) / len(list)
-        plt.hist(list, bins=50, log=False, label=daughter,
+        plt.hist(list, bins=bins, log=False, label=daughter,
         weights=weights, histtype="step", range=x_range_dict[variable])
     plt.ylabel("Probability density")
     plt.xlabel(x_label_dict[variable])
@@ -63,8 +69,11 @@ def plot_hits(variable, parent, daughter):
     for hit in hits:
         main_dict[hit] = load_dict(parent, daughter, hit)
         list = main_dict[hit][variable]
+        for event in list:
+            if event < x_range_dict[variable][0] or event >= x_range_dict[variable][1]:
+                list.remove(event)
         weights = np.ones(len(list)) / len(list)
-        plt.hist(list, bins=50, log=False, label="{0} hit(s)".format(hit),
+        plt.hist(list, bins=bins, log=False, label="{0} hit(s)".format(hit),
         weights=weights, histtype="step", range=x_range_dict[variable])
     plt.ylabel("Probability density")
     plt.xlabel(x_label_dict[variable])
@@ -74,6 +83,8 @@ def plot_hits(variable, parent, daughter):
     savepath = "C:/Users/janro/Documents/LHCb/figures/hits_comp/{0}_{1}_{2}.pdf".format(parent, daughter, variable)
     plt.savefig(savepath)
     plt.close()
+
+bins = 35
 
 parents   = ["Bplus", "Bcplus", "Dplus", "Dsplus"]
 daughters = ["e", "mu", "pipipi"]
@@ -86,12 +97,17 @@ x_label_dict = {"P"     : "Momentum of daughter (Gev/c)",
 				"IP"    : "Impact Parameter of daughter ($\mu$m)", 
 				"angle" : "Angle between parent and daughter momenta (degrees)",
                 "FD"    : "Flight distance of Meson(s) ($\mu$m)"}
-x_range_dict = {"P"     : (0, 150), 
-                "PT"    : (0, 10), 
+x_range_dict = {"P"     : (0, 300), 
+                "PT"    : (0, 50), 
                 "eta"   : (1, 6),
                 "IP"    : (0, 2000), 
                 "angle" : (0, 2),
                 "FD"    : (15000, 50000)}
+
+plot_parents("angle","mu", 1)
+plot_parents("FD","mu", 1)
+plot_parents("IP","mu", 1)
+
 
 #for parent in parents:
 #    print("1")
@@ -99,11 +115,11 @@ x_range_dict = {"P"     : (0, 150),
 #        for variable in variables:
 #            plot_daughters(variable, parent, hit)
 
-for daughter in daughters:
-    print("2")
-    for hit in hits:
-        for variable in variables:
-            plot_parents(variable, daughter, hit)
+#for daughter in daughters:
+#    print("2")
+#    for hit in hits:
+#        for variable in variables:
+#            plot_parents(variable, daughter, hit)
 
 #for parent in parents:
 #    print("3")

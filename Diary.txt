@@ -17,6 +17,14 @@ For now graphing: parent_comp, daughter_comp and hit_comp and efficiency check a
 Week 15 - April 6 to April 10:
 
 Figures done, but J/Psi(1S) is not supported in RapidSim, so we might look at another decay instead. Correction: J/Psi(1S) == J/Psi
-Also, following variables should be in root file:  Bp_BTracking_nVeloSensors = 0; Bp_BTracking_nVeloClusters = 0; Bp_BTracking_nVeloClusterCandidates = 0;
- Bp_BTracking_nVeloClusterHits = 0; Bp_BTracking_totalHitChi2 = -1.
-First one is relevant to find efficiency.
+Also, following variables should be in root file:  Bp_BTracking_nVeloSensors = 0. Checked var, yielded an efficiency of 0.068 percent,
+our scripts yielded double from RapidSim, at 0.138 percent. Original in theory: 0.314 percent. NO CLUE.
+Now checking FD distributions (and eta's, if possible). Seem to be very similar. P, PT also
+Coming back to efficiencies: not everything was run 2. Now it is, and .root benchmark has double the efficiency of our scripts. eta-range from 2 - 5 helps somewhat.
+
+Week 16 - April 13 - April 17:
+
+Spent time on presentation for KVI. Been comparing Full Simulation files to the Rapid Sim files, and trying to make them match by taking into account PT > 500Mev,
+IPCHI2 and FDCHI2 cuts. Unclear on how to proceed right now, considering cutting on P first and see how close we get.
+
+Week 17 - April 

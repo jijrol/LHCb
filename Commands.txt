@@ -4,3 +4,9 @@ ssh -Y jrol@login.nikhef.nl
 ssh -X stbc-i1/2/3/4
 
 scp jrol@lena.nikhef.nl:/dir /destination_dir
+
+ROOT:
+"File/TreeInFile"->cd()
+.ls
+.pwd
+DecayTree.Print("") - Show tree contents
