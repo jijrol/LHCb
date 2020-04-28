@@ -2,8 +2,8 @@ import math, os, sys
 import ROOT as R
 
 path = "project/bfys/jrol/data/"
-rs_tree = R.TFile("RS_Bp2JpsimmKp/DecayTree")
-fs_tree = R.TChain("RS_Bp2JpsimmKp/DecayTree")
+rs_tree = R.TFile("DecayTree")
+fs_tree = R.TChain("Bp2JpsiKp/DecayTree")
 
 for pol in ["up", "down"]:
     fname = "ntuple_bp2jpsimmk_btracking_striplikesel_2018_mc_mag{0}.root".format(pol)
