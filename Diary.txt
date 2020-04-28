@@ -20,11 +20,19 @@ Figures done, but J/Psi(1S) is not supported in RapidSim, so we might look at an
 Also, following variables should be in root file:  Bp_BTracking_nVeloSensors = 0. Checked var, yielded an efficiency of 0.068 percent,
 our scripts yielded double from RapidSim, at 0.138 percent. Original in theory: 0.314 percent. NO CLUE.
 Now checking FD distributions (and eta's, if possible). Seem to be very similar. P, PT also
-Coming back to efficiencies: not everything was run 2. Now it is, and .root benchmark has double the efficiency of our scripts. eta-range from 2 - 5 helps somewhat.
+Coming back to efficiencies: not everything was run 2. Now it is, and full_sim benchmark has double the efficiency of our scripts.
 
 Week 16 - April 13 - April 17:
 
 Spent time on presentation for KVI. Been comparing Full Simulation files to the Rapid Sim files, and trying to make them match by taking into account PT > 500Mev,
 IPCHI2 and FDCHI2 cuts. Unclear on how to proceed right now, considering cutting on P first and see how close we get.
 
-Week 17 - April 
+Week 17 - April 20 - April 24:
+
+Made a Root Macro, as IRoot didn't work out so well. Plotted the differences for FS/RS, are significant even after the cuts. Not sure what to aim for right now.
+Getting the distributions right, or just continue working with RapidSim, or trying to get a Full sim for the Bc+ decay.
+Meeting Maarten: First of all we have to check RapidSim vs. FullSim better with new simulation we will be getting. Secondly, there is a couple of variables
+Maarten showed me in B+ -> J/Psi decays that I have to familiarize myself with to be able to find the B+ VELO hits myself. Especially PatRec->nHits & PatRec->nSensors,
+TrkFit->Eta & TrkFit->Phi. To determine the angle for B+ vs K+, mup, mum.
+Also note we DON'T look at B+ because they are very precisely produced in e+e- beams in e.g. BBbar and Belle experiments. Bc+ only in proton collisions!
+If we want to dive back into the kinematics, probably save a tree with hits only for all 4 decays, and Analyze with ROOT. Should be easy.
