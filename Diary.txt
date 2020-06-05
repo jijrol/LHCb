@@ -36,3 +36,42 @@ Maarten showed me in B+ -> J/Psi decays that I have to familiarize myself with t
 TrkFit->Eta & TrkFit->Phi. To determine the angle for B+ vs K+, mup, mum.
 Also note we DON'T look at B+ because they are very precisely produced in e+e- beams in e.g. BBbar and Belle experiments. Bc+ only in proton collisions!
 If we want to dive back into the kinematics, probably save a tree with hits only for all 4 decays, and Analyze with ROOT. Should be easy.
+
+Week 18 - April 28 - April 31:
+
+Started work on two scripts: improving performance of original analysis, doing it through root, and making a script for checking out track-fit variables.
+Maarten's full_sim files didn't contain the variables yet, so fixing up the kitchen right now.
+
+Week 19 - May 4 - May 8:
+
+Continued work on RapidSim script. We want to use qsub to run ~100 jobs, but no idea how to merge them right away, as we cannot change the name of the output file.
+Should ask tomorrow. Also, don't have a cern account atm, so can't reach the very_loose trees to check full_sim vs Rapid_sim. This is also the file that will serve
+to find the B hits in the VELO. So kind of stuck right now. Should probably just get something done with RapidSim.
+
+Week 20 - May 11-15:
+
+Figured the qsub thing out. Made a nice start, but ended having to redo it anyways as the cuts for RapidSim and FullSim were changed again. Also saw the first 
+results for the TrkFit variables reconstruction resolution for the angles of B+ vs K+/mu+/mu-. Turned out FullSim mistakes B+ for K+ quite often-
+especially when their momenta point in almost the same direction.
+
+Week 21 - May 18-22:
+
+Finally got the comparison for RapidSim/FullSim done. Looks good. The required cuts are now put into qsub simulations as we speak, and trying to get a new plot for
+angle(K+, B+) without the mis-ID's. After talk with Maarten we will again try to get them closer together, so we are looking for a kinematic region where the comparison
+is better still. So still no qsub runs for now. Also, looking for the angle(K+, B+) we find that the TRUEID of K+ is often 521, i.e. a B+. This is far from expected, 
+but could make sense, so we will leave the K+ for now and focus on the mum and mup to get a feel for the variance of the distribution with (angle_REC - angle_TRUE) / TRUE
+
+Week 22 - May 25-29:
+
+Tried to get RapidSim to work with an alternative momentum distribution. Gave input histograms of both MeV and Gev distributions, but no luck. Tried the developers
+who sent a very kind e-mail, but no useful tips, really. Probably going to go with the current discrepancy, might reweigh the momenta to get a more accurate figure for the
+efficiency of the B-hits.
+
+Week 23 - June 2-5:
+ 
+
+
+
+
+
+
