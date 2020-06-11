@@ -68,7 +68,19 @@ who sent a very kind e-mail, but no useful tips, really. Probably going to go wi
 efficiency of the B-hits.
 
 Week 23 - June 2-5:
- 
+
+After some deliberations together with Kristof on 2, 3 and the fourth of June, we decided we needed to properly work out a plan with a possible analysis for Bc+ -> tau.
+Therefore we will focus on the Bplus -> Jpsi (-> mumu) K+ calibration channel, and consequently on a possible normalization channel B+ -> D0 pi+. First we want to get a feel
+for what BpTracking can do for us.
+
+Week 24 - June 8-12:
+
+Got the 2D RapidSim results, which was neat. Solved it only a slight bit. When making a full comparison of MC, MC + reco-cut, RS, RS-2D and FullSim, finally obvious
+it's a reconstruction efficiency issue. Now focussing on making TProfile of nHits vs .. for the B -> Jpsi (mu+ mu-) K+ decay. looks interesting, we obvuously get hits for
+high (transverse) momentum events for B+, interested to see results for daughters.
+
+
+
 
 
 
