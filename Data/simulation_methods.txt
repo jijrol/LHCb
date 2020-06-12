@@ -1,0 +1,10 @@
+After comparing the 5 situations of simulation:
+- RapidSim, 1D input histogram
+- RapidSim, 2D input histogram
+- Monte Carlo DCTT
+- Monte Carlo DCTT with K+ mu+ mu- Reconstructed cuts
+- FullSim
+
+We can draw the conclusion that using a 2D histogram for RapidSim yields a small improvement. Still looks a lot like full MC. The big step towards FullSim is made
+when Monte Carlo events are cut on being able to reconstruc, i.e. *_Reconstructed == 1. Therefore we conclude that the discrepancy is mainly due to the lower reconstruction
+efficiencies at lower momenta.
