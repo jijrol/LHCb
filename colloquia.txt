@@ -1,4 +1,10 @@
 Colloquia Rug: 2 maal, geregistreerd.
 Nikhef Colloquium :     - 27 maart energy recovery in FCCee
-			-
+
+Topical Lectures on Higgs Physics:  - 17 June Experimental Status of Higgs Physics by Frank Filthaut (RU)
+	Different Higgs decay channels fit for measuring the Higgs properties: bb_bar decays as background, ZZ, WW YY channels as signal.
+	Interesting properties of the Higgs: Mass and branching fractions and spin/parity assumptions
+	Signs of new physics in gluon and photon loop contributions for for example a 4th quark generation 
+	Also covers Super symmetry in Higgs physics, showing that SuperSymmetry is being pushed towards the decoupling limit.
+
 			
