@@ -20,6 +20,10 @@ const_c        = 3e2      # [mum/ps]
 const_t_bplus  = 1.638    # [ps]
 const_m_bplus  = 5279.33  # [MeV/c^2]
 
+h_distance = R.TH1F("h_distance", "h_distance", nbins, 0, 1000)
+h_angle    = R.TH1F("h_angle", "h_angle", nbins, 0, 10)
+
+
 def z_active(p, eta, t=const_t_plus, m=const_m_bplus):
     d     = const_c * t * p / m                    # total distance travelled
     theta = 2. * math.atan(math.exp(-eta))         # angle wrt beam axis from pseudorapidity
@@ -73,3 +77,7 @@ for i in range(0, tree.GetEntries()):
         PVBV = BV - PV; PVSV = SV - PV
         theta = angle(PVBV, PVSV)
         d = sin(theta) * distance(BV, PV)
+        h_angle.Fill(theta)
+        h_distance.Fill(d)
+h_angle.Draw(); input()
+h_distance.Draw(); input()
