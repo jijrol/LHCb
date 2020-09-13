@@ -10,3 +10,7 @@ ROOT:
 .ls
 .pwd
 DecayTree.Print("") - Show tree contents
+
+
+Moore:
+lb-run Moore/latest gaudirun.py <options>.py <run_script>.py
