@@ -47,7 +47,7 @@ sum_pdf.fitTo(mass_data)
 print("Performed fitting of composite p.d.f. to data")
 
 # Construct frame for plotting
-B_JCMass_frame = B_JCMass.frame(R.RooFit.Title("Gaussian + double CB signal with exponential Background"))
+B_JCMass_frame = B_JCMass.frame(R.RooFit.Title("Gaussian signal with exponential Background"))
 pull_frame     = B_JCMass.frame(R.RooFit.Title("Pulls of data w.r.t. composite P.D.F."))
 mass_data.plotOn(B_JCMass_frame)
 sum_pdf.plotOn(B_JCMass_frame)
