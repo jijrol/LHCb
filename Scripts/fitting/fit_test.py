@@ -4,12 +4,12 @@
 import ROOT as R
 import ROOT.RooFit as RF
 import sys
-l_empty = R.TLegend(0.9, 0.9, 0.8, 0.8); l_empty.SetBorderSize(0)
+l_empty = R.TLegend(0.81, 0.81, 0.8, 0.8); l_empty.SetBorderSize(0)
 
 def legend(frame):
     legend = R.TLegend(0.9, 0.9, 0.6, 0.7)
-    legend.AddEntry(frame.findObject("signal"))
-    legend.AddEntry(frame.findObject("background"))
+    legend.AddEntry(frame.findObject("signal"), "Signal")
+    legend.AddEntry(frame.findObject("background"), "Background")
     legend.SetBorderSize(0)
     return legend
 
@@ -94,6 +94,7 @@ c1 = R.TCanvas("c1", "canvas 1", 1600, 1200); c1.Divide(2, 2)
 c1.cd(1); B_JCMass_frame.Draw(); save(B_JCMass_frame, "mass_data_fit.pdf")
 c1.cd(2); pull_frame.Draw(); save(pull_frame, "pulls_hist.pdf")
 c1.cd(3); sw_frame.Draw(); save(sw_frame, "sweights.pdf", l1)
+input()
 c1.cd(4); B_CTAU_ps_frame.Draw(); save(B_CTAU_ps_frame, "lifetimes.pdf", l2)
 c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fitting.pdf")
 print("waiting for input")
