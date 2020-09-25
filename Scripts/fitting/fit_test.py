@@ -4,6 +4,7 @@
 import ROOT as R
 import ROOT.RooFit as RF
 import sys
+l_empty = R.TLegend(0.9, 0.9, 0.8, 0.8); l_empty.SetBorderSize(0)
 
 def legend(frame):
     legend = R.TLegend(0.9, 0.9, 0.6, 0.7)
@@ -11,6 +12,12 @@ def legend(frame):
     legend.AddEntry(frame.findObject("background"))
     legend.SetBorderSize(0)
     return legend
+
+def save(frame, title, legend=l_empty):
+    c_temp = R.TCanvas("c_temp", "c_temp", 800, 600)
+    frame.Draw(); legend.Draw()
+    c_temp.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/{0}".format(title))
+    return 0
 
 w = R.RooWorkspace('w')
 
@@ -33,8 +40,8 @@ print("Loaded B_JCMass & B_CTAU_ps variables from TTree!"); n_events = mass_data
 print(n_events)
 
 # Construct gaussian signal P.D.F. with two CB
-a_left  = R.RooRealVar("a_left" , "alpha left CB" , -4, 0)
-a_right = R.RooRealVar("a_right", "alpha right CB", 0, 4)
+a_left  = R.RooRealVar("a_left" , "alpha left CB" , -1.5, 0)
+a_right = R.RooRealVar("a_right", "alpha right CB", 0, 1.5)
 n_left  = R.RooRealVar("n_left" , "n left CB" , 0, 10)
 n_right = R.RooRealVar("n_right", "n right CB", 0, 10)
 cb_left_pdf = R.RooCBShape("cb_left_pdf", "Crystal Ball 1 P.D.F. - signal", B_JCMass, sig_mean, sig_width, a_left, n_left)
@@ -73,24 +80,24 @@ B_CTAU_ps_frame = B_CTAU_ps.frame(RF.Title("Lifetime of signal and background co
 
 mass_data.plotOn(B_JCMass_frame)
 sum_pdf.plotOn(B_JCMass_frame)
-pulls_hist = B_JCMass_frame.pullHist()
+pulls_hist = B_JCMass_frame.pullHist(); pull_frame.addPlotable(pulls_hist)
 sum_pdf.plotOn(B_JCMass_frame, RF.Components("bkg_pdf"), RF.LineColor(R.kRed))
 sum_pdf.plotOn(B_JCMass_frame, RF.Components("double_CB"), RF.LineColor(R.kGreen))
-#mass_data.plotOnXY(sw_frame, RF.YVar(sig_yield_sw), RF.Name("signal"), RF.MarkerColor(R.kRed))
-#mass_data.plotOnXY(sw_frame, RF.YVar(bkg_yield_sw), RF.Name("background"), RF.MarkerColor(R.kBlue))
+mass_data.plotOnXY(sw_frame, RF.YVar(sig_yield_sw), RF.Name("signal"), RF.MarkerColor(R.kRed))
+mass_data.plotOnXY(sw_frame, RF.YVar(bkg_yield_sw), RF.Name("background"), RF.MarkerColor(R.kBlue))
 l1 = legend(sw_frame); l1.Draw()
 sig_data.plotOn(B_CTAU_ps_frame, RF.MarkerColor(R.kBlue), RF.Name("signal"))
 bkg_data.plotOn(B_CTAU_ps_frame, RF.MarkerColor(R.kRed), RF.Name("background"))
 l2 = legend(B_CTAU_ps_frame); l2.Draw()
 
 c1 = R.TCanvas("c1", "canvas 1", 1600, 1200); c1.Divide(2, 2) 
-c1.cd(1); B_JCMass_frame.Draw()
-c1.cd(2); pull_frame.addPlotable(pulls_hist); pull_frame.Draw()
-c1.cd(3); sw_frame.Draw()
-c1.cd(4); B_CTAU_ps_frame.Draw()
+c1.cd(1); B_JCMass_frame.Draw(); save(B_JCMass_frame, "mass_data_fit.pdf")
+c1.cd(2); pull_frame.Draw(); save(pull_frame, "pulls_hist.pdf")
+c1.cd(3); sw_frame.Draw(); save(sw_frame, "sweights.pdf", l1)
+c1.cd(4); B_CTAU_ps_frame.Draw(); save(B_CTAU_ps_frame, "lifetimes.pdf", l2)
 c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fitting.pdf")
 print("waiting for input")
 input()
 
 # change order of plotting on frame so pulls allign properly - DONE, and check if pulls reallign?
-# Also make separate plots with legend ( dont use function?) call legend.Draw() after creating wit hlegend() call
+# Also make separate plots with legend ( dont use function?) call legend.Draw() after creating with legend() call
