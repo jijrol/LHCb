@@ -69,7 +69,7 @@ efficiency of the B-hits.
 
 Week 23 - June 2-5:
 
-After some deliberations together with Kristof on 2, 3 and the fourth of June, we decided we needed to properly work out a plan with a possible analysis for Bc+ -> tau.
+After some deliberations together with Kristof on June 2, 3 and 4, we decided we needed to properly work out a plan with a possible analysis for Bc+ -> tau.
 Therefore we will focus on the Bplus -> Jpsi (-> mumu) K+ calibration channel, and consequently on a possible normalization channel B+ -> D0 pi+. First we want to get a feel
 for what BpTracking can do for us.
 
