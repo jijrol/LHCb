@@ -30,10 +30,10 @@ tree = f_tree.Get("DecayTree")
 print("Loaded TTree!")
 
 # Build Signal Gaussian
-min_inv_mass = 5000; max_inv_mass = 5500
+min_inv_mass = 5180; max_inv_mass = 5500
 B_s0_JCMass = R.RooRealVar("B_s0_JCMass", "invariant mass", min_inv_mass, max_inv_mass, "Mev/c^2")
 #B_CTAU_ps = R.RooRealVar("B_CTAU_ps", "Lifetime", 0, 5, "picoseconds")
-sig_mean = R.RooRealVar("sig_mean", "mean of gaussian signal", 5130, min_inv_mass, max_inv_mass)
+sig_mean = R.RooRealVar("sig_mean", "mean of gaussian signal", 5280, min_inv_mass, max_inv_mass)
 sig_width = R.RooRealVar("sig_width", "width of gaussian signal", 20, 0, 100)
 sig_pdf = R.RooGaussian("sig_pdf", "Gaussian P.D.F. - signal", B_s0_JCMass, sig_mean, sig_width)
 
@@ -43,8 +43,8 @@ print("Loaded B_JCMass & B_CTAU_ps variables from TTree!"); n_events = mass_data
 print(n_events)
 
 # Construct gaussian signal P.D.F. with two CB
-a_left  = R.RooRealVar("a_left" , "alpha left CB" , -0.8, -5 , 0)
-a_right = R.RooRealVar("a_right", "alpha right CB", 0.8, 0, 5)
+a_left  = R.RooRealVar("a_left" , "alpha left CB" , -1.2, -5 , 0)
+a_right = R.RooRealVar("a_right", "alpha right CB", 1.2, 0, 5)
 n_left  = R.RooRealVar("n_left" , "n left CB" , 0, 10)
 n_right = R.RooRealVar("n_right", "n right CB", 0, 10)
 cb_left_pdf = R.RooCBShape("cb_left_pdf", "Crystal Ball 1 P.D.F. - signal", B_s0_JCMass, sig_mean, sig_width, a_left, n_left)
@@ -74,16 +74,16 @@ print("Performed fitting of composite p.d.f. to data.")
 #bkg_data = R.RooDataSet("bkg_data", "Weighted data set with bkg_yield_sw", mass_data, mass_data.get(), "", "bkg_yield_sw")
 
 # Construct frames for plotting
-B_JCMass_frame   = B_s0_JCMass.frame(RF.Title("Double CB signal with exponential background"))
+B_JCMass_frame   = B_s0_JCMass.frame(RF.Title("Double CB signal fiited to MC"))
 pull_frame       = B_s0_JCMass.frame(RF.Title("Pulls of data w.r.t. composite P.D.F."))
 #sw_frame        = B_JCMass.frame(RF.Title("sWeights over invariant mass"))
 #B_CTAU_ps_frame = B_CTAU_ps.frame(RF.Title("Lifetime of signal and background components"))
 
 mass_data.plotOn(B_JCMass_frame)
-double_CB.plotOn(B_JCMass_frame) #sum_pdf -> double_CB
+double_CB.plotOn(B_JCMass_frame)
 pulls_hist = B_JCMass_frame.pullHist(); pull_frame.addPlotable(pulls_hist)
 chi2 = B_JCMass_frame.chiSquare()
-text = R.TText(.5, .5, "chi-sqaured: {0}".format(chi2))
+B_JCMass_frame.SetTitle("Pull of fit w.r.t. MC, chi-2: {0}".format(chi2))
 #sum_pdf.plotOn(B_JCMass_frame, RF.Components("bkg_pdf"), RF.LineColor(R.kRed))
 #sum_pdf.plotOn(B_JCMass_frame, RF.Components("double_CB"), RF.LineColor(R.kGreen))
 #mass_data.plotOnXY(sw_frame, RF.YVar(sig_yield_sw), RF.Name("signal"), RF.MarkerColor(R.kGreen))
@@ -95,7 +95,7 @@ text = R.TText(.5, .5, "chi-sqaured: {0}".format(chi2))
 
 c1 = R.TCanvas("c1", "canvas 1", 1600, 1200); c1.Divide(2) #changed canvas division
 c1.cd(1); B_JCMass_frame.Draw()#; save(B_JCMass_frame, "mass_data_fit.pdf")
-c1.cd(2); pull_frame.Draw(); text.Draw() #; save(pull_frame, "pulls_hist.pdf")
+c1.cd(2); pull_frame.Draw() #; save(pull_frame, "pulls_hist.pdf")
 
 #c1.cd(3); sw_frame.Draw()#; l1.Draw(); save(sw_frame, "sweights.pdf", legend = l1)
 #c1.cd(4); B_CTAU_ps_frame.Draw()#; l2.Draw(); save(B_CTAU_ps_frame, "lifetimes.pdf", legend = l2)
