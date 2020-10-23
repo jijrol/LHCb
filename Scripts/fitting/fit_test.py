@@ -21,11 +21,20 @@ def save(frame, title, legend=l_empty):
     c_temp.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/{0}".format(title))
     return 0
 
+
 w = R.RooWorkspace('w')
 
 treeloc = "/data/bfys/jrol/"
 f_tree = R.TFile.Open("{0}Data_Bu2JpsimmK_Strip21r1_MagDown.root".format(treeloc))
-tree = f_tree.Get("DecayTree")
+old_tree = f_tree.Get("DecayTree")
+new_file = R.TFile.Open("/data/bfys/jrol/temp_tree.root", "RECREATE")
+new_tree = old_tree.CloneTree(0)
+for i in range(old_tree.GetEntries()):
+    old_tree.GetEntry(i)
+    if getattr(old_tree, "Kplus_PIDK") < 5:
+        new_tree.Fill()
+tree = new_tree; print("Filtered on PIDK")
+#tree = old_tree                            ###### PICK old_tree or new_tree
 print("Loaded TTree!")
 
 # Build Signal Gaussian
@@ -37,7 +46,7 @@ sig_width = R.RooRealVar("sig_width", "width of gaussian signal", 20, 0, 100)
 sig_pdf = R.RooGaussian("sig_pdf", "Gaussian P.D.F. - signal", B_JCMass, sig_mean, sig_width)
 
 # Import B_JCMass branch from tree
-mass_data = R.RooDataSet("mass_data", "dataset with invariant mass", tree, R.RooArgSet(B_JCMass, B_CTAU_ps))
+mass_data = R.RooDataSet("mass_data", "dataset with invariant mass", tree, R.RooArgSet(B_JCMass))#, B_CTAU_ps))
 print("Loaded B_JCMass & B_CTAU_ps variables from TTree!"); n_events = mass_data.sumEntries()
 print(n_events)
 
@@ -66,7 +75,7 @@ bkg_pdf = R.RooExponential("bkg_pdf", "Exponential P.D.F - background", B_JCMass
 # Sum P.D.F.'s
 sig_yield = R.RooRealVar("sig_yield", "signal yield", 0, n_events)
 bkg_yield = R.RooRealVar("bkg_yield", "background yield", 0, n_events)
-sum_pdf = R.RooAddPdf("sum_pdf", "signal + background P.D.F.", R.RooArgList(double_CB, bkg_pdf), R.RooArgList(sig_yield, bkg_yield))
+sum_pdf = R.RooAddPdf("sum_pdf", "signal + background P.D.F.", R.RooArgList(double_CB_const, bkg_pdf), R.RooArgList(sig_yield, bkg_yield))
 
 sum_pdf.fitTo(mass_data)
 print("Performed fitting of composite p.d.f. to data.")
@@ -80,7 +89,7 @@ sig_data = R.RooDataSet("sig_data", "Weighted data set with sig_yield_sw", mass_
 bkg_data = R.RooDataSet("bkg_data", "Weighted data set with bkg_yield_sw", mass_data, mass_data.get(), "", "bkg_yield_sw")
 
 # Construct frames for plotting
-B_JCMass_frame   = B_JCMass.frame(RF.Title("Free Double CB model fitted to data"))
+B_JCMass_frame   = B_JCMass.frame(RF.Title("Fixed Double CB model fitted to data w/ PIDK < 5"))
 pull_frame       = B_JCMass.frame(RF.Title("Pulls of data w.r.t. composite P.D.F."))
 #sw_frame        = B_JCMass.frame(RF.Title("sWeights over invariant mass"))
 #B_CTAU_ps_frame = B_CTAU_ps.frame(RF.Title("Lifetime of signal and background components"))
@@ -89,9 +98,9 @@ mass_data.plotOn(B_JCMass_frame)
 sum_pdf.plotOn(B_JCMass_frame) 
 pulls_hist = B_JCMass_frame.pullHist(); pull_frame.addPlotable(pulls_hist)
 chi2 = B_JCMass_frame.chiSquare()
-pull_frame.SetTitle("Pulls of free model, chi-squared: {0}".format(chi2))
+pull_frame.SetTitle("Pulls of fixed model, chi-squared: {0}".format(chi2))
 sum_pdf.plotOn(B_JCMass_frame, RF.Components("bkg_pdf"), RF.LineColor(R.kRed))
-sum_pdf.plotOn(B_JCMass_frame, RF.Components("double_CB"), RF.LineColor(R.kGreen))
+sum_pdf.plotOn(B_JCMass_frame, RF.Components("double_CB_const"), RF.LineColor(R.kGreen))
 #mass_data.plotOnXY(sw_frame, RF.YVar(sig_yield_sw), RF.Name("signal"), RF.MarkerColor(R.kGreen))
 #mass_data.plotOnXY(sw_frame, RF.YVar(bkg_yield_sw), RF.Name("background"), RF.MarkerColor(R.kRed))
 #l1 = legend(sw_frame)
@@ -106,7 +115,7 @@ c1.cd(2); pull_frame.Draw() #; save(pull_frame, "pulls_hist.pdf")
 #c1.cd(3); sw_frame.Draw()#; l1.Draw(); save(sw_frame, "sweights.pdf", legend = l1)
 #c1.cd(4); B_CTAU_ps_frame.Draw()#; l2.Draw(); save(B_CTAU_ps_frame, "lifetimes.pdf", legend = l2)
 
-c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/data_fit_free.pdf")
+c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/data_fit_fixed_pions.pdf")
 print("waiting for input")
 input()
 
