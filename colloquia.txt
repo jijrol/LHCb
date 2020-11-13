@@ -7,4 +7,20 @@ Topical Lectures on Higgs Physics:  - 17 June Experimental Status of Higgs Physi
 	Signs of new physics in gluon and photon loop contributions for for example a 4th quark generation 
 	Also covers Super symmetry in Higgs physics, showing that SuperSymmetry is being pushed towards the decoupling limit.
 
+PHYSSTAT-Flavour: - 19 oktober.
+	Several talks regarding the use of statistics in flavour physics.
+	First talk: Statistical issues in modern beauty and charm flavour physics experiments
+	The importance of using the best methods available by your scientific community, and promoting them. Practically speaking, things like systematic uncertainties should be treated consisted among LHCb analyses.
+	For example, there are theoretical deliberations favouring symmetric over asymmetric confidence intervals.
+	Setting limits on rare searches should be done with well defined coverage probability, and not yield unphysical intervals or limits. 3 sigma is the LHCb choice for reporting a signal rather than an upper limit.
+	Flip-Flopping is a serious issue in setting upper limits.
+	On systematic uncertainties: they can be either frequentist or Bayesian. How does one take into account discrete variations, as they cannot be modeled as a nuisance parameter in your confidence interval?
+	sPlot technique is popular in flavour physics, but indepenence of control variable and variable of interest is not easily shown. Showing a correlation ~0 is insufficient.
+	sPlotting with vanishing signals has some bias twoards a positive result, or should allow negative results but results in a less stable fitting procedure.
+	Seconds talk: systematic uncertainties in practice. 4 examples are discussed for ATLAS, CMS and LHCb. 3 types of systematic errors: explicit, implicit and discrete.
+	Often systematic errors are inflated in order to be on the safe side. This does yield a wrong confidence interval.
+	
+
+
+
 			

@@ -79,6 +79,13 @@ Got the 2D RapidSim results, which was neat. Solved it only a slight bit. When m
 it's a reconstruction efficiency issue. Now focussing on making TProfile of nHits vs .. for the B -> Jpsi (mu+ mu-) K+ decay. looks interesting, we obvuously get hits for
 high (transverse) momentum events for B+, interested to see results for daughters.
 
+Week 45 - November 2-6:
+
+This has been a while. Picking up the work somewhere at the start of september, I have been busy with several things. I have done some test fitting to hopefully get a fit done
+for data on discerning variables (lifetime for B+ vs Bc+, opening angle, Mcorr). That went well, also tried fixing based on MC distribution. Discussed possible background channels
+with Maarten - looks promising (not many). Worked on a 2d plot for fitting of nHits vs. Mcorr. Calculated Corrected mass based on PV-SV information (standard), Btracking information
+- by measuring the B direction resolution, and based on MC information. B tracking is truly promising, but doesn't nearly provide enough S/B. Bottomline: we need more information.
+
 
 
 
