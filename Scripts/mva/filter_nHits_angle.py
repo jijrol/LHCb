@@ -86,23 +86,25 @@ branch_angle = filtered_tree.Branch("angle", angle, "angle/D")
 
 nEvents = int(options.fracevents * old_tree.GetEntries())
 j = 0
-for i in range(nEvents):
+for i in range(int(1.0 * nEvents)):
     old_tree.GetEntry(i)                                          
-    px    = getattr(old_tree, "PX_TRUE")     
-    py    = getattr(old_tree, "PY_TRUE")
-    pz    = getattr(old_tree, "PZ_TRUE")
-    P[0]     = getattr(old_tree, "P_TRUE")
-    PT[0]    = getattr(old_tree, "PT_TRUE")
-    eta   = math.acosh(P[0] / PT[0])                   
+    p     = getattr(old_tree, "P_TRUE")
+    pt    = getattr(old_tree, "PT_TRUE")
+    eta   = math.acosh(p / pt)                   
     tau   = random.expovariate(1. / lifetime)
-    ns[0] = nsensors(P[0] * 1000., eta, tau, mass)
+    ns[0] = nsensors(p * 1000., eta, tau, mass)
     ns[0] = ns[0] if ns[0] <= nsensors_max else nsensors_max
     if ns[0] > 0:
+        px    = getattr(old_tree, "PX_TRUE")     
+        py    = getattr(old_tree, "PY_TRUE")
+        pz    = getattr(old_tree, "PZ_TRUE")
         PX_3pi = getattr(old_tree, "PX_3pi")
         PY_3pi = getattr(old_tree, "PY_3pi")
         PZ_3pi = getattr(old_tree, "PZ_3pi")
         P_3pi  = [PX_3pi, PY_3pi, PZ_3pi]
         P_meson = [px, py, pz]
+        P[0]  = np.linalg.norm(P_meson)
+        PT[0] = math.sqrt(PX_3pi**2 + PY_3pi**2)
         angle[0] = Angle(P_3pi, P_meson) + R.gRandom.Gaus(0, smear)
         filtered_tree.Fill()
         j+=1
