@@ -131,7 +131,7 @@ h2d_sig.Draw("PLC SURF"); h2d_bkg.Draw("PLC SURF SAME"); h2d_sig.GetXaxis().SetT
 #hP_all.Draw("PLC HIST"); hP_sig.Draw("PLC SAME HIST")
 #hP_bkg.Draw("PLC SAME HIST"); hP_pur.Draw("PLC SAME HIST")
 L1 = R.gPad.BuildLegend(0.65, 0.7, 0.9, 0.82); L1.SetBorderSize(0); h2d_sig.SetTitle("Corrected mass vs. opening angle, Signal & Background")
-c1.SaveAs("/project/bfys/jrol/LHCb/figures/mva/surface_Mcorr_angle.pdf")
+c1.SaveAs("/project/bfys/jrol/LHCb/figures/mva/surface_Mcorr_angle.pdf"); c1.SetBottomMargin(0.1)
 #hP_all.GetXaxis().SetTitle("Momentum (Gev/c)"); hP_all.GetYaxis().SetTitle("number in bin")
 #c2 = R.TCanvas("c2", "c2", 1200, 800)
 #hPT_all.Draw("PLC HIST"); hPT_sig.Draw("PLC SAME HIST")
