@@ -44,9 +44,9 @@ sig_width = R.RooRealVar("sig_width", "width of gaussian signal", 20, 0, 100)
 sig_pdf = R.RooGaussian("sig_pdf", "Gaussian P.D.F. - signal", B_JCMass, sig_mean, sig_width)
 
 # Import B_JCMass branch from tree
-mass_data = R.RooDataSet("mass_data", "dataset with invariant mass", tree, R.RooArgSet(B_JCMass))#, B_CTAU_ps))
-print("Loaded B_JCMass & B_CTAU_ps variables from TTree!"); n_events = mass_data.sumEntries()
-print(n_events)
+mass_data = R.RooDataSet("mass_data", "dataset with invariant mass", tree, R.RooArgSet(B_JCMass))
+print("Loaded B_JCMass variable from TTree!"); n_events = mass_data.sumEntries()
+print("no of events :" n_events)
 
 # Construct gaussian signal P.D.F. with two CB
 a_left        = R.RooRealVar("a_left" , "alpha left CB" , -1, -5 , 0)
@@ -113,7 +113,7 @@ c1.cd(2); pull_frame.Draw() #; save(pull_frame, "pulls_hist.pdf")
 #c1.cd(3); sw_frame.Draw()#; l1.Draw(); save(sw_frame, "sweights.pdf", legend = l1)
 #c1.cd(4); B_CTAU_ps_frame.Draw()#; l2.Draw(); save(B_CTAU_ps_frame, "lifetimes.pdf", legend = l2)
 
-c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/data_fit_fixed_pions.pdf")
+#c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/data_fit_fixed_pions.pdf")
 print("waiting for input")
 input()
 

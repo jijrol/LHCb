@@ -19,6 +19,14 @@ PHYSSTAT-Flavour: - 19 oktober.
 	sPlotting with vanishing signals has some bias twoards a positive result, or should allow negative results but results in a less stable fitting procedure.
 	Seconds talk: systematic uncertainties in practice. 4 examples are discussed for ATLAS, CMS and LHCb. 3 types of systematic errors: explicit, implicit and discrete.
 	Often systematic errors are inflated in order to be on the safe side. This does yield a wrong confidence interval.
+
+Nikhef Colloquium december 4:
+	LIGO and VIRGO gravitational wave detections. An updated catalog is published of GW detections. First time an Intermediate Black Hole formation has been observed of 142 solar masses.
+	Shows evidence of higher multipole gravitational wave production, rather than the standard quarupole GW's.
+	Parameter Estimation from the black hole merger catalogue: no significant precession measured in mergers so far.
+	Also some localization in the sky can be done, depending on the quality of the GW form.
+	Observed total masses can give us information on Black Hole mass population
+	Merger rates might vary with redshift, although inconclusive results for now. 
 	
 
 
