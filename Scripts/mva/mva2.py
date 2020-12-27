@@ -133,7 +133,7 @@ stack.Add(hMcorr_noBTracking_Bcp)
 stack.Add(hMcorr_noBTracking_Dp)
 stack.Add(hMcorr_noBTracking_Dsp)
 stack.Draw("PLC HIST NOSTACK")
-stack.GetXaxis().SetTitle("corrected mass (Gev/c^{2})")
+stack.GetXaxis().SetTitle("corrected mass (GeV/c^{2})")
 stack.GetYaxis().SetTitle("arbitrary units")
 Leg = ctemp.BuildLegend(0.55, 0.5, 0.89, 0.89); Leg.SetBorderSize(0)
 
