@@ -8,9 +8,9 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_curve, roc_auc_score
 
-def scale_list(factor, items):
-    for item in items:
-        item.Scale(factor)
+def normalize_list(items):
+    for hist in items:
+        hist.Scale(1 / hist.GetEntries())
 
 # Import trees
 loc_yeB = "/data/bfys/jrol/RapidSim/{0}2tau2pipipi_filtered.root"
@@ -58,11 +58,11 @@ hangle_pur = R.TH1F("hangle_pur", "'Pure' signal events", 100, 0, 3.0)
 Bp_df_noB["flag"] = 1; Bcp_df_noB["flag"] = 1; Bp_df_yeB["flag"] = 1; Bcp_df_yeB["flag"] = 1
 Dp_df_noB["flag"] = 0; Dsp_df_noB["flag"] = 0; Dp_df_yeB["flag"] = 0; Dsp_df_yeB["flag"] = 0
 
-full_frame_noB = pd.concat([Dp_df_noB, Dsp_df_noB, Bp_df_noB, Bcp_df_noB], ignore_index=True, sort=False)
+#full_frame_noB = pd.concat([Dp_df_noB, Dsp_df_noB, Bp_df_noB, Bcp_df_noB], ignore_index=True, sort=False)
 full_frame_yeB = pd.concat([Dp_df_yeB, Dsp_df_yeB, Bp_df_yeB, Bcp_df_yeB], ignore_index=True, sort=False)
 yeB_observables = ["P", "PT", "Mcorr", "BpTracking_nHits", "angle"] 
-noB_observables = ["PT", "Mcorr", "angle", "BpTracking_nHits"]
-train_noB, test_noB = train_test_split(full_frame_yeB, test_size=0.5)
+#noB_observables = ["PT", "Mcorr", "angle", "BpTracking_nHits"]
+#train_noB, test_noB = train_test_split(full_frame_yeB, test_size=0.5)
 train_yeB, test_yeB = train_test_split(full_frame_yeB, test_size=0.5)
 
 # GBC config, Fit vars to training set
@@ -70,39 +70,78 @@ verbose = 1
 tol = 1e-4
 init = "zero"
 n_estimators = 100
-gbc_noB = GradientBoostingClassifier(verbose=verbose, tol=tol, init=init, n_estimators=n_estimators)
+#gbc_noB = GradientBoostingClassifier(verbose=verbose, tol=tol, init=init, n_estimators=n_estimators)
 gbc_yeB = GradientBoostingClassifier(verbose=verbose, tol=tol, init=init, n_estimators=n_estimators)
-gbc_noB.fit(train_noB[noB_observables], train_noB["flag"])
+#gbc_noB.fit(train_noB[noB_observables], train_noB["flag"])
 gbc_yeB.fit(train_yeB[yeB_observables], train_yeB["flag"])
 
 # Apply training to give prob and pred
-predictions_noB   = gbc_noB.predict(test_noB[noB_observables])
+#predictions_noB   = gbc_noB.predict(test_noB[noB_observables])
 predictions_yeB   = gbc_yeB.predict(test_yeB[yeB_observables])
-probabilities_noB = gbc_noB.predict_proba(test_noB[noB_observables])
+#probabilities_noB = gbc_noB.predict_proba(test_noB[noB_observables])
 probabilities_yeB = gbc_yeB.predict_proba(test_yeB[yeB_observables])
 
 #Determine preformance; roc curve, auc score.
-fpr_noB, tpr_noB, thresholds_noB = roc_curve(test_noB["flag"], probabilities_noB[:, 1])
+#fpr_noB, tpr_noB, thresholds_noB = roc_curve(test_noB["flag"], probabilities_noB[:, 1])
 fpr_yeB, tpr_yeB, thresholds_yeB = roc_curve(test_yeB["flag"], probabilities_yeB[:, 1])
-auc_noB = roc_auc_score(test_noB["flag"], probabilities_noB[:, 1])
+#auc_noB = roc_auc_score(test_noB["flag"], probabilities_noB[:, 1])
 auc_yeB = roc_auc_score(test_yeB["flag"], probabilities_yeB[:, 1])
 fig, axes = plt.subplots(1, 2, figsize = (12,5))
 xlims = [0, 1e-4]; xscales = ["linear", "log"]
-for i in range(len(axes)):
-    axe = axes[i]
-    axe.xaxis.set_tick_params(labelsize=14); axe.yaxis.set_tick_params(labelsize=14)
-    axe.plot(fpr_noB, tpr_noB, label = "PT, Mcorr, angle, nHits; AUC = {0:.3f}".format(auc_noB))
-    axe.plot(fpr_yeB, tpr_yeB, label = "P, PT, Mcorr, angle, nHits; AUC = {0:.3f}".format(auc_yeB))
-    if i == 0: axe.legend(loc='best', fontsize=14)
-    axe.tick_params(size=20)
-    axe.set_xlim(xlims[i],1)
-    axe.set_ylim(0,1)
-    axe.set_xscale(xscales[i])
-    axe.set_xlabel('False positive rate', fontsize = 14)
-    axe.set_ylabel('True positive rate', fontsize = 14)
-    axe.grid(True)
-plt.subplots_adjust(wspace=0.24)
-fig.tight_layout()    
-savestring = "/project/bfys/jrol/LHCb/figures/mva/mva_noP.pdf"
-plt.savefig(savestring)
-plt.show()
+
+
+no_bkg_cut = 0.99119
+for i in range(len(test_yeB)-1):
+    Mcorr = test_yeB['Mcorr'].iloc[i]
+    angle = test_yeB['angle'].iloc[i]
+    hMcorr_all.Fill(Mcorr)
+    hangle_all.Fill(angle)
+    if test_yeB['flag'].iloc[i] < 1:
+        h2d_bkg.Fill(Mcorr, angle)
+        hMcorr_bkg.Fill(Mcorr)
+        hangle_bkg.Fill(angle) 
+    if test_yeB['flag'].iloc[i] > 0:
+        h2d_sig.Fill(Mcorr, angle)
+        hMcorr_sig.Fill(Mcorr)
+        hangle_sig.Fill(angle)
+    if probabilities_yeB[i, 1] >= no_bkg_cut:
+#        pure_amount += 1
+        hMcorr_pur.Fill(Mcorr)
+        hangle_pur.Fill(angle)
+
+normalize_list([hMcorr_all, hMcorr_sig, hMcorr_bkg, hMcorr_pur])
+normalize_list([hangle_all, hangle_sig, hangle_bkg, hangle_pur])
+stack = R.THStack("stack", "stack")
+R.gStyle.SetPalette(1); R.gStyle.SetOptStat(0); R.gStyle.SetOptTitle(0)
+ctemp = R.TCanvas("ctemp", "ctemp", 1200, 800)
+#stack.Add(hangle_all)
+#stack.Add(hangle_sig)
+#stack.Add(hangle_bkg)
+#stack.Add(hangle_pur)
+#stack.Draw("PLC HIST NOSTACK")
+h2d_bkg.GetXaxis().SetTitle("corrected mass (GeV/c^{2})")
+h2d_bkg.GetYaxis().SetTitle("opening angle (degrees)")
+#Leg = ctemp.BuildLegend(0.55, 0.5, 0.89, 0.89); Leg.SetBorderSize(0)
+ctemp.SetRightMargin(0.12)
+h2d_bkg.DrawNormalized("COLZ")
+ctemp.SaveAs("/project/bfys/jrol/LHCb/figures/mva/2d_bkg.pdf")
+input()
+
+#for i in range(len(axes)):
+#    axe = axes[i]
+#    axe.xaxis.set_tick_params(labelsize=14); axe.yaxis.set_tick_params(labelsize=14)
+#    axe.plot(fpr_noB, tpr_noB, label = "PT, Mcorr, angle, nHits; AUC = {0:.3f}".format(auc_noB))
+##    axe.plot(fpr_yeB, tpr_yeB, label = "P, PT, Mcorr, angle, nHits; AUC = {0:.3f}".format(auc_yeB))
+#    if i == 0: axe.legend(loc='best', fontsize=14)
+#    axe.tick_params(size=20)
+#    axe.set_xlim(xlims[i],1)
+#    axe.set_ylim(0,1)
+#    axe.set_xscale(xscales[i])
+#    axe.set_xlabel('False positive rate', fontsize = 14)
+#    axe.set_ylabel('True positive rate', fontsize = 14)
+#    axe.grid(True)
+
+#fig.tight_layout()    
+#savestring = "/project/bfys/jrol/LHCb/figures/mva/pure_angle2.pdf"
+#plt.savefig(savestring)
+#plt.show()

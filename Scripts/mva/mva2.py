@@ -86,40 +86,40 @@ print("Completed training")
 #probabilities2 = gbc2.predict_proba(test[all_observables])
 
 
-#no_bkg_cut = 0.99119
-#for i in range(len(test)-1):
-#    P = test['P'].iloc[i]
-#    PT = test['PT'].iloc[i]
-#    Mcorr = test['Mcorr'].iloc[i]
-#    nHits = test['BpTracking_nHits'].iloc[i]
-#    angle = test['angle'].iloc[i]
-#    hP_all.Fill(P)
-#    hPT_all.Fill(PT)
-#    hMcorr_all.Fill(Mcorr)
-#    hnHits_all.Fill(nHits)
-#    hangle_all.Fill(angle)
-#    if test['flag'].iloc[i] < 1:
-#    h2d_bkg.Fill(Mcorr, angle)
-#        hP_bkg.Fill(P)
-#        hPT_bkg.Fill(PT)
-#        hMcorr_bkg.Fill(Mcorr)
-#        hnHits_bkg.Fill(nHits)
-#        hangle_bkg.Fill(angle) 
-#    if test['flag'].iloc[i] > 0:
-#        h2d_sig.Fill(Mcorr, angle)
-#        hP_sig.Fill(P)
-#        hPT_sig.Fill(PT)
-#        hMcorr_sig.Fill(Mcorr)
-#        hnHits_sig.Fill(nHits)
-#        hangle_sig.Fill(angle)
-#    if probabilities2[i, 1] >= no_bkg_cut:
-#        pure_amount += 1
-#        hP_pur.Fill(P)
-#        hPT_pur.Fill(PT)
-#        hMcorr_pur.Fill(Mcorr)
-#        hnHits_pur.Fill(nHits)
-#        hangle_pur.Fill(angle)
-#print(pure_amount, total_amount, bkg_amount, sig_amount)
+no_bkg_cut = 0.99119
+for i in range(len(test)-1):
+    P = test['P'].iloc[i]
+    PT = test['PT'].iloc[i]
+    Mcorr = test['Mcorr'].iloc[i]
+    nHits = test['BpTracking_nHits'].iloc[i]
+    angle = test['angle'].iloc[i]
+    hP_all.Fill(P)
+    hPT_all.Fill(PT)
+    hMcorr_all.Fill(Mcorr)
+    hnHits_all.Fill(nHits)
+    hangle_all.Fill(angle)
+    if test['flag'].iloc[i] < 1:
+    h2d_bkg.Fill(Mcorr, angle)
+        hP_bkg.Fill(P)
+        hPT_bkg.Fill(PT)
+        hMcorr_bkg.Fill(Mcorr)
+        hnHits_bkg.Fill(nHits)
+        hangle_bkg.Fill(angle) 
+    if test['flag'].iloc[i] > 0:
+        h2d_sig.Fill(Mcorr, angle)
+        hP_sig.Fill(P)
+        hPT_sig.Fill(PT)
+        hMcorr_sig.Fill(Mcorr)
+        hnHits_sig.Fill(nHits)
+        hangle_sig.Fill(angle)
+    if probabilities2[i, 1] >= no_bkg_cut:
+        pure_amount += 1
+        hP_pur.Fill(P)
+        hPT_pur.Fill(PT)
+        hMcorr_pur.Fill(Mcorr)
+        hnHits_pur.Fill(nHits)
+        hangle_pur.Fill(angle)
+print(pure_amount, total_amount, bkg_amount, sig_amount)
 #scale_list(1, [hP_all, hPT_all, hMcorr_all, hnHits_all, hangle_all])
 #scale_list(1, [hP_sig, hPT_sig, hMcorr_sig, hnHits_sig, hangle_sig])
 #scale_list(1, [hP_bkg, hPT_bkg, hMcorr_bkg, hnHits_bkg, hangle_bkg])
