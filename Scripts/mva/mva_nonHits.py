@@ -61,8 +61,8 @@ Dp_df_noB["flag"] = 0; Dsp_df_noB["flag"] = 0; Dp_df_yeB["flag"] = 0; Dsp_df_yeB
 full_frame_noB = pd.concat([Dp_df_noB, Dsp_df_noB, Bp_df_noB, Bcp_df_noB], ignore_index=True, sort=False)
 full_frame_yeB = pd.concat([Dp_df_yeB, Dsp_df_yeB, Bp_df_yeB, Bcp_df_yeB], ignore_index=True, sort=False)
 yeB_observables = ["P", "PT", "Mcorr", "BpTracking_nHits", "angle"] 
-noB_observables = ["P", "PT", "Mcorr_noBTracking", "angle"]
-train_noB, test_noB = train_test_split(full_frame_noB, test_size=0.5)
+noB_observables = ["PT", "Mcorr", "angle", "BpTracking_nHits"]
+train_noB, test_noB = train_test_split(full_frame_yeB, test_size=0.5)
 train_yeB, test_yeB = train_test_split(full_frame_yeB, test_size=0.5)
 
 # GBC config, Fit vars to training set
@@ -91,8 +91,8 @@ xlims = [0, 1e-4]; xscales = ["linear", "log"]
 for i in range(len(axes)):
     axe = axes[i]
     axe.xaxis.set_tick_params(labelsize=14); axe.yaxis.set_tick_params(labelsize=14)
-    axe.plot(fpr_noB, tpr_noB, label = "No BpTracking; AUC = {0:.3f}".format(auc_noB))
-    axe.plot(fpr_yeB, tpr_yeB, label = "BpTracking; AUC = {0:.3f}".format(auc_yeB))
+    axe.plot(fpr_noB, tpr_noB, label = "PT, Mcorr, angle, nHits; AUC = {0:.3f}".format(auc_noB))
+    axe.plot(fpr_yeB, tpr_yeB, label = "P, PT, Mcorr, angle, nHits; AUC = {0:.3f}".format(auc_yeB))
     if i == 0: axe.legend(loc='best', fontsize=14)
     axe.tick_params(size=20)
     axe.set_xlim(xlims[i],1)
@@ -101,8 +101,8 @@ for i in range(len(axes)):
     axe.set_xlabel('False positive rate', fontsize = 14)
     axe.set_ylabel('True positive rate', fontsize = 14)
     axe.grid(True)
-#plt.subplots_adjust(wspace=0.24)
-plt.tight_layout()
-savestring = "/project/bfys/jrol/LHCb/figures/mva/mva_noB.pdf"
+plt.subplots_adjust(wspace=0.24)
+fig.tight_layout()    
+savestring = "/project/bfys/jrol/LHCb/figures/mva/mva_noP.pdf"
 plt.savefig(savestring)
 plt.show()
