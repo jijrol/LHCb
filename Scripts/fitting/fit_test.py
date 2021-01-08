@@ -9,7 +9,7 @@ import sys
 l_empty = R.TLegend(0.81, 0.81, 0.8, 0.8); l_empty.SetBorderSize(0)
 
 def legend(frame):
-    legend = R.TLegend(0.88, 0.88, 0.6, 0.7)
+    legend = R.TLegend(0.6, 0.6, 0.89, 0.89)
     legend.AddEntry(frame.findObject("signal"), "Signal")
     legend.AddEntry(frame.findObject("background"), "Background")
     legend.SetBorderSize(0)
@@ -29,24 +29,23 @@ f_tree = R.TFile.Open("{0}Data_Bu2JpsimmK_Strip21r1_MagDown.root".format(treeloc
 old_tree = f_tree.Get("DecayTree")
 new_file = R.TFile.Open("/data/bfys/jrol/temp_tree.root", "RECREATE")
 new_tree = old_tree.CloneTree(0)
-for i in range(old_tree.GetEntries()):
+for i in range(int(1 * old_tree.GetEntries())):
     old_tree.GetEntry(i)
-    if getattr(old_tree, "Kplus_PIDK") < 5:
+    if getattr(old_tree, "Kplus_PIDK") > 5:
         new_tree.Fill()
 tree = new_tree; print("Filtered on PIDK")
-#tree = old_tree                            ###### PICK old_tree or new_tree
 print("Loaded TTree!")
 
 # Build Signal Gaussian
 min_inv_mass = 5180; max_inv_mass = 5500
-B_JCMass = R.RooRealVar("B_JCMass", "invariant mass", min_inv_mass, max_inv_mass, "Mev/c^2")
-B_CTAU_ps = R.RooRealVar("B_CTAU_ps", "Lifetime", 0, 5, "picoseconds")
+B_JCMass = R.RooRealVar("B_JCMass", "invariant mass [MeV/c^{2}]", min_inv_mass, max_inv_mass, "")
+B_CTAU_ps = R.RooRealVar("B_CTAU_ps", "lifetime [ps]", 0, 5, "")
 sig_mean = R.RooRealVar("sig_mean", "mean of gaussian signal", 5280, min_inv_mass, max_inv_mass)
 sig_width = R.RooRealVar("sig_width", "width of gaussian signal", 20, 0, 100)
 sig_pdf = R.RooGaussian("sig_pdf", "Gaussian P.D.F. - signal", B_JCMass, sig_mean, sig_width)
 
 # Import B_JCMass branch from tree
-mass_data = R.RooDataSet("mass_data", "dataset with invariant mass", tree, R.RooArgSet(B_JCMass))#, B_CTAU_ps))
+mass_data = R.RooDataSet("mass_data", "dataset with invariant mass", tree, R.RooArgSet(B_JCMass, B_CTAU_ps))
 print("Loaded B_JCMass & B_CTAU_ps variables from TTree!"); n_events = mass_data.sumEntries()
 print(n_events)
 
@@ -68,6 +67,7 @@ frac1 = R.RooRealVar("frac1", "fraction of CB 1", 0.5, 0., 1)
 frac2 = R.RooRealVar("frac2", "fraction of CB 2", 0.5, 0., 1)
 double_CB = R.RooAddPdf("double_CB", "Gauss with two CB tails", R.RooArgList(cb_left_pdf, cb_right_pdf, sig_pdf), R.RooArgList(frac1, frac2))
 double_CB_const = R.RooAddPdf("double_CB_const", "Gauss with two fixed CB tails", R.RooArgList(cb_left_const_pdf, cb_right_const_pdf, sig_pdf), R.RooArgList(frac1, frac2))
+
 # Construct exponential background P.D.F.
 exp_const = R.RooRealVar("exp_const", "exponential decay rate of bkg", -0.002, -0.01, 0)
 bkg_pdf = R.RooExponential("bkg_pdf", "Exponential P.D.F - background", B_JCMass, exp_const)
@@ -89,33 +89,43 @@ sig_data = R.RooDataSet("sig_data", "Weighted data set with sig_yield_sw", mass_
 bkg_data = R.RooDataSet("bkg_data", "Weighted data set with bkg_yield_sw", mass_data, mass_data.get(), "", "bkg_yield_sw")
 
 # Construct frames for plotting
-B_JCMass_frame   = B_JCMass.frame(RF.Title("Fixed Double CB model fitted to data w/ PIDK < 5"))
-pull_frame       = B_JCMass.frame(RF.Title("Pulls of data w.r.t. composite P.D.F."))
-#sw_frame        = B_JCMass.frame(RF.Title("sWeights over invariant mass"))
-#B_CTAU_ps_frame = B_CTAU_ps.frame(RF.Title("Lifetime of signal and background components"))
+B_JCMass_frame   = B_JCMass.frame(RF.Bins(160)); B_JCMass_frame.GetYaxis().SetTitle("events / (2 MeV/c^{2})")
+pull_frame       = B_JCMass.frame()
+sw_frame         = B_JCMass.frame(); sw_frame.GetYaxis().SetTitle("arbitrary units")
+B_CTAU_ps_frame  = B_CTAU_ps.frame(); B_CTAU_ps_frame.GetYaxis().SetTitle("events / 0.05 ps")
 
 mass_data.plotOn(B_JCMass_frame)
-sum_pdf.plotOn(B_JCMass_frame) 
+sum_pdf.plotOn(B_JCMass_frame, RF.Name("sum_pdf"), RF.LineColor(R.kBlue)) 
 pulls_hist = B_JCMass_frame.pullHist(); pull_frame.addPlotable(pulls_hist)
 chi2 = B_JCMass_frame.chiSquare()
 pull_frame.SetTitle("Pulls of fixed model, chi-squared: {0}".format(chi2))
-sum_pdf.plotOn(B_JCMass_frame, RF.Components("bkg_pdf"), RF.LineColor(R.kRed))
-sum_pdf.plotOn(B_JCMass_frame, RF.Components("double_CB_const"), RF.LineColor(R.kGreen))
-#mass_data.plotOnXY(sw_frame, RF.YVar(sig_yield_sw), RF.Name("signal"), RF.MarkerColor(R.kGreen))
-#mass_data.plotOnXY(sw_frame, RF.YVar(bkg_yield_sw), RF.Name("background"), RF.MarkerColor(R.kRed))
-#l1 = legend(sw_frame)
-#sig_data.plotOn(B_CTAU_ps_frame, RF.MarkerColor(R.kGreen), RF.Name("signal"))
-#bkg_data.plotOn(B_CTAU_ps_frame, RF.MarkerColor(R.kRed), RF.Name("background"))
-#l2 = legend(B_CTAU_ps_frame)
+sum_pdf.plotOn(B_JCMass_frame, RF.Name("bkg_pdf"), RF.Components("bkg_pdf"), RF.LineColor(R.kRed))
+sum_pdf.plotOn(B_JCMass_frame, RF.Name("sig_pdf"), RF.Components("double_CB_const"), RF.LineColor(R.kGreen))
+mass_data.plotOnXY(sw_frame, RF.YVar(sig_yield_sw), RF.Name("signal"), RF.MarkerColor(R.kGreen))
+mass_data.plotOnXY(sw_frame, RF.YVar(bkg_yield_sw), RF.Name("background"), RF.MarkerColor(R.kRed))
+sw_frame.SetMaximum(4)
+sig_data.plotOn(B_CTAU_ps_frame, RF.MarkerColor(R.kGreen), RF.Name("signal"))
+bkg_data.plotOn(B_CTAU_ps_frame, RF.MarkerColor(R.kRed), RF.Name("background"))
+l2 = legend(B_CTAU_ps_frame)
 
-c1 = R.TCanvas("c1", "canvas 1", 1600, 1200); c1.Divide(2) #changed canvas division
-c1.cd(1); B_JCMass_frame.Draw()#; save(B_JCMass_frame, "mass_data_fit.pdf")
-c1.cd(2); pull_frame.Draw() #; save(pull_frame, "pulls_hist.pdf")
+c1 = R.TCanvas("c1", "canvas 1", 1200, 800); B_JCMass_frame.SetTitle(""); B_JCMass_frame.Draw(); c1.SetLeftMargin(0.12)
+l0 = R.TLegend(0.6, 0.6, 0.89, 0.89)
+l0.AddEntry(B_JCMass_frame.findObject("sig_pdf"), "Signal", "L")
+l0.AddEntry(B_JCMass_frame.findObject("bkg_pdf"), "Background", "L")
+l0.AddEntry(B_JCMass_frame.findObject("sum_pdf"), "Sum", "L")
+l0.SetBorderSize(0); l0.Draw()
 
-#c1.cd(3); sw_frame.Draw()#; l1.Draw(); save(sw_frame, "sweights.pdf", legend = l1)
-#c1.cd(4); B_CTAU_ps_frame.Draw()#; l2.Draw(); save(B_CTAU_ps_frame, "lifetimes.pdf", legend = l2)
+c2 = R.TCanvas("c2", "canvas 2", 1200, 800); sw_frame.SetTitle(""); sw_frame.Draw(); c2.SetLeftMargin(0.12)
+l1 = R.TLegend(0.6, 0.6, 0.89, 0.89)
+l1.AddEntry(sw_frame.findObject("signal"), "Signal")
+l1.AddEntry(sw_frame.findObject("background"), "Background")
+l1.SetBorderSize(0); l1.Draw()
 
-c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/data_fit_fixed_pions.pdf")
+c3 = R.TCanvas("c3", "canvas 3", 1200, 800); B_CTAU_ps_frame.SetTitle(""); B_CTAU_ps_frame.Draw(); l2.Draw()
+c3.SetLeftMargin(0.12)
+c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass.pdf")
+c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_sweights.pdf")
+c3.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_lifetime.pdf")
 print("waiting for input")
 input()
 
