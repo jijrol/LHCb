@@ -21,6 +21,108 @@ def save(frame, title, legend=l_empty):
     c_temp.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/{0}".format(title))
     return 0
 
+def makePlotWithPulls(canvas, frame, log = False, ymax = -1, legend = None, pavetext = None, nopulls = False):
+    # clone frame
+    frame_clone = frame
+    # pull graph
+    h_resid_errors = frame_clone.pullHist("h_mass_data", "sum_pdf");
+    pull_graph = R.TGraph(h_resid_errors.GetN(), h_resid_errors.GetX(), h_resid_errors.GetY())
+    #sum_pdf.plotOn(frame_clone, RF.Name("sig_pdf"), RF.Components("double_CB"), RF.LineColor(R.kGreen))
+    #sum_pdf.plotOn(frame_clone, RF.Name("bkg_pdf"), RF.Components("bgk_pdf"), RF.LineColor(R.kRed))
+    
+    
+    plotvar = frame_clone.getPlotVar()
+    binwidth = ( frame_clone.GetXaxis().GetXmax() - frame_clone.GetXaxis().GetXmin() ) / frame_clone.GetNbinsX()
+    frame_clone.GetYaxis().SetTitle("Candidates / ( %s %s )" % (str(binwidth).rstrip('0').rstrip('.'),plotvar.getUnit()))
+    frame_clone.GetYaxis().SetTitleOffset(1.25)
+    frame_clone.GetYaxis().CenterTitle()
+    if not nopulls: frame_clone.GetXaxis().SetLabelSize(0)
+
+    ymid = 0.27
+    if not nopulls:
+        # adapt x-axis
+        frame_clone.GetXaxis().SetLabelSize(0)
+        # adapt y-axis
+        frame_clone.GetYaxis().SetTitleOffset(1.30)
+        frame_clone.GetYaxis().SetTitleSize(0.05*(1.0/(1-ymid)));
+        frame_clone.GetYaxis().SetLabelSize(0.04*(1.0/(1-ymid)));
+
+    if log: 
+        frame_clone.SetMinimum(1.1)
+    else:
+        frame_clone.SetMinimum(0.0001)
+    if ymax > 0:
+        frame_clone.SetMaximum(ymax)
+    elif log: 
+        frame_clone.SetMaximum(3.0*frame_clone.GetMaximum())
+    else:
+        frame_clone.SetMaximum(1.1*frame_clone.GetMaximum())
+
+    canvas.cd(0)
+    canvas.SetTopMargin(0.0)
+    canvas.SetBottomMargin(0.0)
+    canvas.SetLeftMargin(0.0)
+    
+    # pads for data and pull
+    pad1 = R.TPad("data_pad", "other_data_pad", 0.05, ymid if not nopulls else 0.10, 0.98, 0.97 if not nopulls else 0.90)
+    pad1.SetBottomMargin(0.02 if not nopulls else 0.17)
+    pad1.SetTopMargin(0.07)
+    pad1.SetLeftMargin(0.17)
+    pad2 = R.TPad("pull_pad_pass", "pull_pad_pass", 0.05, 0.00, 0.98, ymid)
+    pad2.SetBottomMargin(0.65)
+    pad2.SetTopMargin(0.05)
+    pad2.SetLeftMargin(0.17)
+
+    # pull x-axis config
+    pull_graph.GetXaxis().SetLimits(pull_graph.GetX()[0], pull_graph.GetX()[pull_graph.GetN() - 1])
+    pull_graph.GetXaxis().SetTitle("{0} [{1}]".format(plotvar.GetTitle(),plotvar.getUnit()) )
+    pull_graph.GetXaxis().SetTitleSize(0.05* (1.0/ymid));
+    pull_graph.GetXaxis().SetLabelSize(0.05* (1.0/ymid));
+    pull_graph.GetXaxis().SetTitleOffset(1.10);        
+    # pull y-axis config
+    pull_graph.GetYaxis().SetRangeUser(-3, 3)
+    pull_graph.GetYaxis().SetTitle("Pull")
+    pull_graph.GetYaxis().SetTitleSize(0.05* (1.0/ymid));
+    pull_graph.GetYaxis().SetLabelSize(0.04* (1.0/ymid));
+    pull_graph.GetYaxis().SetTitleOffset(0.49)
+    pull_graph.GetYaxis().SetNdivisions(502)
+    pull_graph.GetYaxis().SetTickLength(0.08)
+    pull_graph.GetYaxis().CenterTitle()
+    pull_graph.SetFillColor(R.kBlack)
+    
+    dot_functie = R.TF1("plus_twee_sigma", "2", pull_graph.GetX()[0], pull_graph.GetX()[pull_graph.GetN() - 1])
+    dot_functie.SetLineColor(R.kRed)
+    dot_functie.SetLineStyle(R.kDotted)
+
+    min_twee_sigma = R.TF1("min_twee_sigma", "-2", pull_graph.GetX ()[0], pull_graph.GetX ()[pull_graph.GetN() - 1])
+    min_twee_sigma.SetLineColor(R.kRed)
+    min_twee_sigma.SetLineStyle(R.kDotted)
+    
+    canvas.cd(2)
+    pad1.Draw()
+    if not nopulls: pad2.Draw()
+    
+    pad1.cd()
+    
+    if log: pad1.SetLogy()
+    frame_clone.Draw()
+    if legend:
+        legend.Draw()
+    if pavetext:
+        pavetext.Draw()
+
+    if not nopulls:
+        pad2.cd()
+        pull_graph.Draw("AB");
+        dot_functie.Draw("SAME")
+        min_twee_sigma.Draw("SAME")
+        pull_graph.Draw("B SAME");
+   
+    canvas.Update()
+    objlist = [frame_clone,pad1,pad2,h_resid_errors,pull_graph,dot_functie,min_twee_sigma]
+    for obj in objlist :
+        R.SetOwnership(obj, False)
+    return pad1, pad2, frame_clone
 
 w = R.RooWorkspace('w')
 
@@ -37,15 +139,16 @@ tree = new_tree; print("Filtered on PIDK")
 print("Loaded TTree!")
 
 # Build Signal Gaussian
-min_inv_mass = 5180; max_inv_mass = 5500
-B_JCMass = R.RooRealVar("B_JCMass", "invariant mass [MeV/c^{2}]", min_inv_mass, max_inv_mass, "")
+min_inv_mass = 5180; max_inv_mass = 5500; nbins = int(max_inv_mass - min_inv_mass / 2)
+B_JCMass = R.RooRealVar("B_JCMass", "invariant mass", min_inv_mass, max_inv_mass, "MeV/c^{2}")
 B_CTAU_ps = R.RooRealVar("B_CTAU_ps", "lifetime [ps]", 0, 5, "")
 sig_mean = R.RooRealVar("sig_mean", "mean of gaussian signal", 5280, min_inv_mass, max_inv_mass)
 sig_width = R.RooRealVar("sig_width", "width of gaussian signal", 20, 0, 100)
 sig_pdf = R.RooGaussian("sig_pdf", "Gaussian P.D.F. - signal", B_JCMass, sig_mean, sig_width)
 
 # Import B_JCMass branch from tree
-mass_data = R.RooDataSet("mass_data", "dataset with invariant mass", tree, R.RooArgSet(B_JCMass, B_CTAU_ps))
+mass_data = R.RooDataSet("mass_data", "dataset with invariant mass and lifetime", tree, R.RooArgSet(B_JCMass, B_CTAU_ps))
+#data_hist = mass_data_only.createHistogram("data_hist", B_JCMass, RF.Binning(nbins))
 print("Loaded B_JCMass & B_CTAU_ps variables from TTree!"); n_events = mass_data.sumEntries()
 print(n_events)
 
@@ -54,9 +157,9 @@ a_left        = R.RooRealVar("a_left" , "alpha left CB" , -1, -5 , 0)
 a_left_const  = R.RooRealVar("a_left_const", "alpha left CB, fixed", -1.495)
 a_right       = R.RooRealVar("a_right", "alpha right CB", 1, 0, 5)
 a_right_const = R.RooRealVar("a_right_const", "alpha right CB, fixed", 1.388)
-n_left        = R.RooRealVar("n_left" , "n left CB" , 0, 10)
+n_left        = R.RooRealVar("n_left" , "n left CB" , 0.5, 10)
 n_left_const  = R.RooRealVar("n_left_const" , "n left CB, fixed", 3.271)
-n_right       = R.RooRealVar("n_right", "n right CB", 0, 10)
+n_right       = R.RooRealVar("n_right", "n right CB", 0.5, 10)
 n_right_const = R.RooRealVar("n_right_const" , "n right CB, fixed" , 2.936)
 
 cb_left_pdf = R.RooCBShape("cb_left_pdf", "Crystal Ball 1 P.D.F.", B_JCMass, sig_mean, sig_width, a_left, n_left)
@@ -75,7 +178,7 @@ bkg_pdf = R.RooExponential("bkg_pdf", "Exponential P.D.F - background", B_JCMass
 # Sum P.D.F.'s
 sig_yield = R.RooRealVar("sig_yield", "signal yield", 0, n_events)
 bkg_yield = R.RooRealVar("bkg_yield", "background yield", 0, n_events)
-sum_pdf = R.RooAddPdf("sum_pdf", "signal + background P.D.F.", R.RooArgList(double_CB_const, bkg_pdf), R.RooArgList(sig_yield, bkg_yield))
+sum_pdf = R.RooAddPdf("sum_pdf", "signal + background P.D.F.", R.RooArgList(double_CB, bkg_pdf), R.RooArgList(sig_yield, bkg_yield))
 
 sum_pdf.fitTo(mass_data)
 print("Performed fitting of composite p.d.f. to data.")
@@ -90,17 +193,15 @@ bkg_data = R.RooDataSet("bkg_data", "Weighted data set with bkg_yield_sw", mass_
 
 # Construct frames for plotting
 B_JCMass_frame   = B_JCMass.frame(RF.Bins(160)); B_JCMass_frame.GetYaxis().SetTitle("events / (2 MeV/c^{2})")
-pull_frame       = B_JCMass.frame()
 sw_frame         = B_JCMass.frame(); sw_frame.GetYaxis().SetTitle("arbitrary units")
 B_CTAU_ps_frame  = B_CTAU_ps.frame(); B_CTAU_ps_frame.GetYaxis().SetTitle("events / 0.05 ps")
 
 mass_data.plotOn(B_JCMass_frame)
 sum_pdf.plotOn(B_JCMass_frame, RF.Name("sum_pdf"), RF.LineColor(R.kBlue)) 
-pulls_hist = B_JCMass_frame.pullHist(); pull_frame.addPlotable(pulls_hist)
-chi2 = B_JCMass_frame.chiSquare()
-pull_frame.SetTitle("Pulls of fixed model, chi-squared: {0}".format(chi2))
+sum_pdf.plotOn(B_JCMass_frame, RF.Name("sig_pdf"), RF.Components("double_CB"), RF.LineColor(R.kGreen))
 sum_pdf.plotOn(B_JCMass_frame, RF.Name("bkg_pdf"), RF.Components("bkg_pdf"), RF.LineColor(R.kRed))
-sum_pdf.plotOn(B_JCMass_frame, RF.Name("sig_pdf"), RF.Components("double_CB_const"), RF.LineColor(R.kGreen))
+c4 = R.TCanvas("c4", "c4", 1200, 800); B_JCMass_frame.SetTitle("")
+pad1, pad2, frame_clone = makePlotWithPulls(c4, B_JCMass_frame)
 mass_data.plotOnXY(sw_frame, RF.YVar(sig_yield_sw), RF.Name("signal"), RF.MarkerColor(R.kGreen))
 mass_data.plotOnXY(sw_frame, RF.YVar(bkg_yield_sw), RF.Name("background"), RF.MarkerColor(R.kRed))
 sw_frame.SetMaximum(4)
@@ -108,8 +209,7 @@ sig_data.plotOn(B_CTAU_ps_frame, RF.MarkerColor(R.kGreen), RF.Name("signal"))
 bkg_data.plotOn(B_CTAU_ps_frame, RF.MarkerColor(R.kRed), RF.Name("background"))
 l2 = legend(B_CTAU_ps_frame)
 
-c1 = R.TCanvas("c1", "canvas 1", 1200, 800); B_JCMass_frame.SetTitle(""); B_JCMass_frame.Draw(); c1.SetLeftMargin(0.12)
-l0 = R.TLegend(0.6, 0.6, 0.89, 0.89)
+l0 = R.TLegend(0.6, 0.6, 0.89, 0.89); pad1.cd()
 l0.AddEntry(B_JCMass_frame.findObject("sig_pdf"), "Signal", "L")
 l0.AddEntry(B_JCMass_frame.findObject("bkg_pdf"), "Background", "L")
 l0.AddEntry(B_JCMass_frame.findObject("sum_pdf"), "Sum", "L")
@@ -123,9 +223,11 @@ l1.SetBorderSize(0); l1.Draw()
 
 c3 = R.TCanvas("c3", "canvas 3", 1200, 800); B_CTAU_ps_frame.SetTitle(""); B_CTAU_ps_frame.Draw(); l2.Draw()
 c3.SetLeftMargin(0.12)
-c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass.pdf")
-c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_sweights.pdf")
-c3.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_lifetime.pdf")
+#c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass.pdf")
+#c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_sweights.pdf")
+#c3.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_lifetime.pdf")
+
+c4.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass_wpulls.pdf")
 print("waiting for input")
 input()
 
