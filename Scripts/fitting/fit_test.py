@@ -131,7 +131,7 @@ f_tree = R.TFile.Open("{0}Data_Bu2JpsimmK_Strip21r1_MagDown.root".format(treeloc
 old_tree = f_tree.Get("DecayTree")
 new_file = R.TFile.Open("/data/bfys/jrol/temp_tree.root", "RECREATE")
 new_tree = old_tree.CloneTree(0)
-for i in range(int(1 * old_tree.GetEntries())):
+for i in range(int(1.0 * old_tree.GetEntries())):
     old_tree.GetEntry(i)
     if getattr(old_tree, "Kplus_PIDK") > 5:
         new_tree.Fill()
@@ -148,7 +148,6 @@ sig_pdf = R.RooGaussian("sig_pdf", "Gaussian P.D.F. - signal", B_JCMass, sig_mea
 
 # Import B_JCMass branch from tree
 mass_data = R.RooDataSet("mass_data", "dataset with invariant mass and lifetime", tree, R.RooArgSet(B_JCMass, B_CTAU_ps))
-#data_hist = mass_data_only.createHistogram("data_hist", B_JCMass, RF.Binning(nbins))
 print("Loaded B_JCMass & B_CTAU_ps variables from TTree!"); n_events = mass_data.sumEntries()
 print(n_events)
 
@@ -198,8 +197,8 @@ B_CTAU_ps_frame  = B_CTAU_ps.frame(); B_CTAU_ps_frame.GetYaxis().SetTitle("event
 
 mass_data.plotOn(B_JCMass_frame)
 sum_pdf.plotOn(B_JCMass_frame, RF.Name("sum_pdf"), RF.LineColor(R.kBlue)) 
-sum_pdf.plotOn(B_JCMass_frame, RF.Name("sig_pdf"), RF.Components("double_CB"), RF.LineColor(R.kGreen))
-sum_pdf.plotOn(B_JCMass_frame, RF.Name("bkg_pdf"), RF.Components("bkg_pdf"), RF.LineColor(R.kRed))
+sum_pdf.plotOn(B_JCMass_frame, RF.Name("sig_pdf"), RF.Components("double_CB"), RF.LineColor(R.kGreen), RF.LineStyle(R.kDashed))
+sum_pdf.plotOn(B_JCMass_frame, RF.Name("bkg_pdf"), RF.Components("bkg_pdf"), RF.LineColor(R.kRed), RF.LineStyle(R.kDashed))
 c4 = R.TCanvas("c4", "c4", 1200, 800); B_JCMass_frame.SetTitle("")
 pad1, pad2, frame_clone = makePlotWithPulls(c4, B_JCMass_frame)
 mass_data.plotOnXY(sw_frame, RF.YVar(sig_yield_sw), RF.Name("signal"), RF.MarkerColor(R.kGreen))
@@ -212,7 +211,7 @@ l2 = legend(B_CTAU_ps_frame)
 l0 = R.TLegend(0.6, 0.6, 0.89, 0.89); pad1.cd()
 l0.AddEntry(B_JCMass_frame.findObject("sig_pdf"), "Signal", "L")
 l0.AddEntry(B_JCMass_frame.findObject("bkg_pdf"), "Background", "L")
-l0.AddEntry(B_JCMass_frame.findObject("sum_pdf"), "Sum", "L")
+l0.AddEntry(B_JCMass_frame.findObject("sum_pdf"), "Total fit", "L")
 l0.SetBorderSize(0); l0.Draw()
 
 c2 = R.TCanvas("c2", "canvas 2", 1200, 800); sw_frame.SetTitle(""); sw_frame.Draw(); c2.SetLeftMargin(0.12)
@@ -227,7 +226,7 @@ c3.SetLeftMargin(0.12)
 #c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_sweights.pdf")
 #c3.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_lifetime.pdf")
 
-c4.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass_wpulls.pdf")
+#c4.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass_wpulls.pdf")
 print("waiting for input")
 input()
 
