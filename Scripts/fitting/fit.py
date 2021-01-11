@@ -7,6 +7,109 @@ import sys
 from array import array
 l_empty = R.TLegend(0.81, 0.81, 0.8, 0.8); l_empty.SetBorderSize(0)
 
+def makePlotWithPulls(canvas, frame, log = False, ymax = -1, legend = None, pavetext = None, nopulls = False, data = None, curve = None):
+    # clone frame
+    frame_clone = frame
+    # pull graph
+    h_resid_errors = frame_clone.pullHist(data, curve);
+    pull_graph = R.TGraph(h_resid_errors.GetN(), h_resid_errors.GetX(), h_resid_errors.GetY())
+    #sum_pdf.plotOn(frame_clone, RF.Name("sig_pdf"), RF.Components("double_CB"), RF.LineColor(R.kGreen))
+    #sum_pdf.plotOn(frame_clone, RF.Name("bkg_pdf"), RF.Components("bgk_pdf"), RF.LineColor(R.kRed))
+    
+    
+    plotvar = frame_clone.getPlotVar()
+    binwidth = ( frame_clone.GetXaxis().GetXmax() - frame_clone.GetXaxis().GetXmin() ) / frame_clone.GetNbinsX()
+#    frame_clone.GetYaxis().SetTitle("Candidates / ( %s %s )" % (str(binwidth).rstrip('0').rstrip('.'),plotvar.getUnit()))
+    frame_clone.GetYaxis().SetTitleOffset(1.25)
+    frame_clone.GetYaxis().CenterTitle()
+    if not nopulls: frame_clone.GetXaxis().SetLabelSize(0)
+
+    ymid = 0.27
+    if not nopulls:
+        # adapt x-axis
+        frame_clone.GetXaxis().SetLabelSize(0)
+        # adapt y-axis
+        frame_clone.GetYaxis().SetTitleOffset(1.30)
+        frame_clone.GetYaxis().SetTitleSize(0.05*(1.0/(1-ymid)));
+        frame_clone.GetYaxis().SetLabelSize(0.04*(1.0/(1-ymid)));
+
+    if log: 
+        frame_clone.SetMinimum(1.1)
+    else:
+        frame_clone.SetMinimum(0.000)
+    if ymax > 0:
+        frame_clone.SetMaximum(ymax)
+    elif log: 
+        frame_clone.SetMaximum(3.0*frame_clone.GetMaximum())
+    else:
+        frame_clone.SetMaximum(1.1*frame_clone.GetMaximum())
+
+    canvas.cd(0)
+    canvas.SetTopMargin(0.0)
+    canvas.SetBottomMargin(0.0)
+    canvas.SetLeftMargin(0.0)
+    
+    # pads for data and pull
+    pad1 = R.TPad("data_pad", "other_data_pad", 0.05, ymid if not nopulls else 0.10, 0.98, 0.97 if not nopulls else 0.90)
+    pad1.SetBottomMargin(0.02 if not nopulls else 0.17)
+    pad1.SetTopMargin(0.07)
+    pad1.SetLeftMargin(0.17)
+    pad2 = R.TPad("pull_pad_pass", "pull_pad_pass", 0.05, 0.00, 0.98, ymid)
+    pad2.SetBottomMargin(0.65)
+    pad2.SetTopMargin(0.05)
+    pad2.SetLeftMargin(0.17)
+
+    # pull x-axis config
+    pull_graph.GetXaxis().SetLimits(pull_graph.GetX()[0], pull_graph.GetX()[pull_graph.GetN() - 1])
+    pull_graph.GetXaxis().SetTitle("{0} [{1}]".format(plotvar.GetTitle(),plotvar.getUnit()) )
+    pull_graph.GetXaxis().SetTitleSize(0.05* (1.0/ymid));
+    pull_graph.GetXaxis().SetLabelSize(0.05* (1.0/ymid));
+    pull_graph.GetXaxis().SetTitleOffset(1.10);        
+    # pull y-axis config
+    pull_graph.GetYaxis().SetRangeUser(-5, 5)
+    pull_graph.GetYaxis().SetTitle("Pull")
+    pull_graph.GetYaxis().SetTitleSize(0.05* (1.0/ymid));
+    pull_graph.GetYaxis().SetLabelSize(0.04* (1.0/ymid));
+    pull_graph.GetYaxis().SetTitleOffset(0.49)
+    pull_graph.GetYaxis().SetNdivisions(502)
+    pull_graph.GetYaxis().SetTickLength(0.08)
+    pull_graph.GetYaxis().CenterTitle()
+    pull_graph.SetFillColor(R.kBlack)
+    
+    dot_functie = R.TF1("plus_twee_sigma", "2", pull_graph.GetX()[0], pull_graph.GetX()[pull_graph.GetN() - 1])
+    dot_functie.SetLineColor(R.kRed)
+    dot_functie.SetLineStyle(R.kDotted)
+
+    min_twee_sigma = R.TF1("min_twee_sigma", "-2", pull_graph.GetX ()[0], pull_graph.GetX ()[pull_graph.GetN() - 1])
+    min_twee_sigma.SetLineColor(R.kRed)
+    min_twee_sigma.SetLineStyle(R.kDotted)
+    
+    canvas.cd(2)
+    pad1.Draw()
+    if not nopulls: pad2.Draw()
+    
+    pad1.cd()
+    
+    if log: pad1.SetLogy()
+    frame_clone.Draw()
+    if legend:
+        legend.Draw()
+    if pavetext:
+        pavetext.Draw()
+
+    if not nopulls:
+        pad2.cd()
+        pull_graph.Draw("AB");
+        dot_functie.Draw("SAME")
+        min_twee_sigma.Draw("SAME")
+        pull_graph.Draw("B SAME");
+   
+    canvas.Update()
+    objlist = [frame_clone,pad1,pad2,h_resid_errors,pull_graph,dot_functie,min_twee_sigma]
+    for obj in objlist :
+        R.SetOwnership(obj, False)
+    return pad1, pad2, frame_clone
+
 def legend(frame):
     legend = R.TLegend(0.6, 0.7, 0.8, 0.88)
     legend.AddEntry(frame.findObject("signal"), "Signal")
@@ -127,41 +230,39 @@ sum_pdf_cut        = R.RooAddPdf("sum_pdf_cut", "Fixed signal + background P.D.F
 B_DTF_PV_consJpsi_M_frame  = B_DTF_PV_consJpsi_M.frame()
 B_DTF_PV_consJpsi_M_frame2 = B_DTF_PV_consJpsi_M.frame()
 
-mass_data.plotOn(B_DTF_PV_consJpsi_M_frame, RF.Name("data"))
-sum_pdf.plotOn(B_DTF_PV_consJpsi_M_frame, RF.Name("sum_pdf"))
+mass_data.plotOn(B_DTF_PV_consJpsi_M_frame, RF.Name("data"), RF.DataError(1))
 sum_pdf.plotOn(B_DTF_PV_consJpsi_M_frame, RF.Name("arg1_pdf"), RF.Components("arg_1pi_pdf"), RF.Range(min_inv_mass, arg_1pi_m0.getValV()+20), RF.LineColor(8), RF.LineStyle(R.kDashed))
 sum_pdf.plotOn(B_DTF_PV_consJpsi_M_frame, RF.Name("arg2_pdf"), RF.Components("arg_2pi_pdf"), RF.Range(min_inv_mass, arg_2pi_m0.getValV()+20), RF.LineColor(6), RF.LineStyle(10))
 sum_pdf.plotOn(B_DTF_PV_consJpsi_M_frame,  RF.Name("bkg_pdf"), RF.Components("bkg_pdf"), RF.LineColor(R.kRed))
+sum_pdf.plotOn(B_DTF_PV_consJpsi_M_frame, RF.Name("sum_pdf"))
 B_DTF_PV_consJpsi_M_frame.SetTitle(""); B_DTF_PV_consJpsi_M_frame.GetXaxis().SetTitle("invariant mass [MeV/c^{2}]")
 c1 = R.TCanvas("c1", "canvas 1", 1200, 800); c1.SetLeftMargin(0.12)
-B_DTF_PV_consJpsi_M_frame.Draw()
+B_DTF_PV_consJpsi_M_frame.Print()
 
 sum_pdf_cut.fitTo(mass_data_cut)
-mass_data_cut.plotOn(B_DTF_PV_consJpsi_M_frame2, RF.DataError(2), RF.Name("data"))
+mass_data_cut.plotOn(B_DTF_PV_consJpsi_M_frame2, RF.Name("data"), RF.DrawOption("E0"), RF.DataError(1))
 sum_pdf_cut.plotOn(B_DTF_PV_consJpsi_M_frame2, RF.Name("sum_pdf_cut"))
-#sum_pdf_cut.plotOn(B_DTF_PV_consJpsi_M_frame2, RF.Name("bkg_pdf"), RF.Components("bkg_pdf_cut"), RF.LineColor(R.kRed))
 sum_pdf_cut.plotOn(B_DTF_PV_consJpsi_M_frame2, RF.Name("arg1_pdf_cut"), RF.Components("arg_1pi_pdf_const"), RF.Range(min_inv_mass, arg_1pi_m0.getValV() + 50), RF.LineColor(8), RF.LineStyle(R.kDashed))
 sum_pdf_cut.plotOn(B_DTF_PV_consJpsi_M_frame2, RF.Name("arg2_pdf_cut"), RF.Components("arg_2pi_pdf_const"), RF.Range(min_inv_mass, arg_2pi_m0.getValV() + 20), RF.LineColor(6), RF.LineStyle(10))
 B_DTF_PV_consJpsi_M_frame2.SetTitle(""); B_DTF_PV_consJpsi_M_frame2.GetXaxis().SetTitle("invariant mass [MeV/c^{2}]")
-#B_DTF_PV_consJpsi_M_frame2.SetMaximum(2.0 * B_DTF_PV_consJpsi_M_frame2.GetMaximum())
-#B_DTF_PV_consJpsi_M_frame2.SetMinimum(0.05)
+B_DTF_PV_consJpsi_M_frame2.Print()
 
-Leg1 = R.TLegend(0.55, 0.6, 0.89, 0.89); Leg1.SetBorderSize(0)
-Leg1.AddEntry(B_DTF_PV_consJpsi_M_frame.findObject("arg1_pdf"), "#it{B #rightarrow J#kern[0.]{#/}#kern[-0.7]{#psi} K #pi}" , "L")
-Leg1.AddEntry(B_DTF_PV_consJpsi_M_frame.findObject("arg2_pdf"), "#it{B #rightarrow J#kern[0.]{#/}#kern[-0.7]{#psi} K #pi #pi}", "L")
+Leg1 = R.TLegend(0.55, 0.5, 0.89, 0.89); Leg1.SetBorderSize(0)
+Leg1.AddEntry(B_DTF_PV_consJpsi_M_frame.findObject("arg1_pdf"), "#it{B #rightarrow J#kern[0.1]{#/}#kern[-0.5]{#psi} K #pi}" , "L")
+Leg1.AddEntry(B_DTF_PV_consJpsi_M_frame.findObject("arg2_pdf"), "#it{B #rightarrow J#kern[0.1]{#/}#kern[-0.5]{#psi} K #pi #pi}", "L")
 Leg1.AddEntry(B_DTF_PV_consJpsi_M_frame.findObject("bkg_pdf"), "Background", "L")
 Leg1.AddEntry(B_DTF_PV_consJpsi_M_frame.findObject("sum_pdf"), "Total fit", "L")
-Leg1.Draw()
+makePlotWithPulls(c1, B_DTF_PV_consJpsi_M_frame, data = "data", curve = "sum_pdf", legend = Leg1)
 
-Leg2 = R.TLegend(0.55, 0.7, 0.89, 0.89); Leg2.SetBorderSize(0)
-Leg2.AddEntry(B_DTF_PV_consJpsi_M_frame2.findObject("arg1_pdf_cut"), "#it{B #rightarrow J#kern[0.]{#/}#kern[-0.7]{#psi} K #pi}" , "L")
-Leg2.AddEntry(B_DTF_PV_consJpsi_M_frame2.findObject("arg2_pdf_cut"), "#it{B #rightarrow J#kern[0.]{#/}#kern[-0.7]{#psi} K #pi #pi}", "L")
+Leg2 = R.TLegend(0.55, 0.6, 0.89, 0.89); Leg2.SetBorderSize(0)
+Leg2.AddEntry(B_DTF_PV_consJpsi_M_frame2.findObject("arg1_pdf_cut"), "#it{B #rightarrow J#kern[0.1]{#/}#kern[-0.5]{#psi} K #pi}" , "L")
+Leg2.AddEntry(B_DTF_PV_consJpsi_M_frame2.findObject("arg2_pdf_cut"), "#it{B #rightarrow J#kern[0.1]{#/}#kern[-0.5]{#psi} K #pi #pi}", "L")
 Leg2.AddEntry(B_DTF_PV_consJpsi_M_frame2.findObject("sum_pdf_cut"), "Total fit", "L")
 
-print(frac3_cut.getValV(), frac4_cut.getValV())
-c2 = R.TCanvas("c2", "c2", 1200, 800); B_DTF_PV_consJpsi_M_frame2.Draw(); Leg2.Draw()#; c2.SetLogy()
+c2 = R.TCanvas("c2", "c2", 1200, 800)
+makePlotWithPulls(c2, B_DTF_PV_consJpsi_M_frame2, legend = Leg2, data = "data", curve = "sum_pdf_cut")
 c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/data_fit1.pdf")
-c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/data_fit2.pdf")
+#c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/data_fit2.pdf")
 print("waiting for input")
 input()
 
