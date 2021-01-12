@@ -8,6 +8,11 @@ import ROOT.RooFit as RF
 import sys
 l_empty = R.TLegend(0.81, 0.81, 0.8, 0.8); l_empty.SetBorderSize(0)
 
+def set_label_large(frame, canvas):
+    frame.GetXaxis().SetTitleSize(0.05); frame.GetXaxis().SetLabelSize(0.04)
+    frame.GetYaxis().SetTitleSize(0.05); frame.GetYaxis().SetLabelSize(0.04)
+    canvas.SetLeftMargin(0.12); canvas.SetBottomMargin(0.12)
+
 def legend(frame):
     legend = R.TLegend(0.6, 0.6, 0.89, 0.89)
     legend.AddEntry(frame.findObject("signal"), "Signal")
@@ -131,7 +136,7 @@ f_tree = R.TFile.Open("{0}Data_Bu2JpsimmK_Strip21r1_MagDown.root".format(treeloc
 old_tree = f_tree.Get("DecayTree")
 new_file = R.TFile.Open("/data/bfys/jrol/temp_tree.root", "RECREATE")
 new_tree = old_tree.CloneTree(0)
-for i in range(int(1.0 * old_tree.GetEntries())):
+for i in range(int(1 * old_tree.GetEntries())):
     old_tree.GetEntry(i)
     if getattr(old_tree, "Kplus_PIDK") > 5:
         new_tree.Fill()
@@ -191,9 +196,9 @@ sig_data = R.RooDataSet("sig_data", "Weighted data set with sig_yield_sw", mass_
 bkg_data = R.RooDataSet("bkg_data", "Weighted data set with bkg_yield_sw", mass_data, mass_data.get(), "", "bkg_yield_sw")
 
 # Construct frames for plotting
-B_JCMass_frame   = B_JCMass.frame(RF.Bins(160)); B_JCMass_frame.GetYaxis().SetTitle("events / (2 MeV/c^{2})")
-sw_frame         = B_JCMass.frame(); sw_frame.GetYaxis().SetTitle("arbitrary units")
-B_CTAU_ps_frame  = B_CTAU_ps.frame(); B_CTAU_ps_frame.GetYaxis().SetTitle("events / 0.05 ps")
+B_JCMass_frame   = B_JCMass.frame(RF.Bins(160)); B_JCMass_frame.GetYaxis().SetTitle("Events / (2 MeV/c^{2})")
+sw_frame         = B_JCMass.frame(); sw_frame.GetYaxis().SetTitle("arbitrary units")                       
+B_CTAU_ps_frame  = B_CTAU_ps.frame(); B_CTAU_ps_frame.GetYaxis().SetTitle("Events / (0.05 ps)")              
 
 mass_data.plotOn(B_JCMass_frame)
 sum_pdf.plotOn(B_JCMass_frame, RF.Name("sum_pdf"), RF.LineColor(R.kBlue)) 
@@ -203,7 +208,7 @@ c4 = R.TCanvas("c4", "c4", 1200, 800); B_JCMass_frame.SetTitle("")
 pad1, pad2, frame_clone = makePlotWithPulls(c4, B_JCMass_frame)
 mass_data.plotOnXY(sw_frame, RF.YVar(sig_yield_sw), RF.Name("signal"), RF.MarkerColor(R.kGreen))
 mass_data.plotOnXY(sw_frame, RF.YVar(bkg_yield_sw), RF.Name("background"), RF.MarkerColor(R.kRed))
-sw_frame.SetMaximum(4)
+sw_frame.SetMaximum(4); sw_frame.GetXaxis().SetTitle("invariant mass [MeV/c^{2}]")
 sig_data.plotOn(B_CTAU_ps_frame, RF.MarkerColor(R.kGreen), RF.Name("signal"))
 bkg_data.plotOn(B_CTAU_ps_frame, RF.MarkerColor(R.kRed), RF.Name("background"))
 l2 = legend(B_CTAU_ps_frame)
@@ -220,13 +225,10 @@ l1.AddEntry(sw_frame.findObject("signal"), "Signal")
 l1.AddEntry(sw_frame.findObject("background"), "Background")
 l1.SetBorderSize(0); l1.Draw()
 
-c3 = R.TCanvas("c3", "canvas 3", 1200, 800); B_CTAU_ps_frame.SetTitle(""); B_CTAU_ps_frame.Draw(); l2.Draw()
-c3.SetLeftMargin(0.12)
-#c1.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass.pdf")
-#c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_sweights.pdf")
-#c3.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_lifetime.pdf")
+c3 = R.TCanvas("c3", "canvas 3", 1200, 800); B_CTAU_ps_frame.SetTitle(""); B_CTAU_ps_frame.Draw(); B_CTAU_ps_frame.GetXaxis().SetTitle("lifetime [ps]"); l2.Draw()
+set_label_large(sw_frame, c2); set_label_large(B_CTAU_ps_frame, c3)
 
-#c4.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass_wpulls.pdf")
-print("waiting for input")
-input()
+c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_sweights.pdf")
+c3.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_lifetime.pdf")
+c4.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass_wpulls.pdf")
 
