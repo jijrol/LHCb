@@ -228,7 +228,7 @@ l1.SetBorderSize(0); l1.Draw()
 c3 = R.TCanvas("c3", "canvas 3", 1200, 800); B_CTAU_ps_frame.SetTitle(""); B_CTAU_ps_frame.Draw(); B_CTAU_ps_frame.GetXaxis().SetTitle("lifetime [ps]"); l2.Draw()
 set_label_large(sw_frame, c2); set_label_large(B_CTAU_ps_frame, c3)
 
-c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_sweights.pdf")
+c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_sweights.png")
 #c3.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_lifetime.pdf")
 #c4.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass_wpulls.pdf")
 input()
