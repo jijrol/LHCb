@@ -136,7 +136,7 @@ f_tree = R.TFile.Open("{0}Data_Bu2JpsimmK_Strip21r1_MagDown.root".format(treeloc
 old_tree = f_tree.Get("DecayTree")
 new_file = R.TFile.Open("/data/bfys/jrol/temp_tree.root", "RECREATE")
 new_tree = old_tree.CloneTree(0)
-for i in range(int(0.05 * old_tree.GetEntries())):
+for i in range(int(0.03 * old_tree.GetEntries())):
     old_tree.GetEntry(i)
     if getattr(old_tree, "Kplus_PIDK") > 5:
         new_tree.Fill()
@@ -228,7 +228,7 @@ l1.SetBorderSize(0); l1.Draw()
 c3 = R.TCanvas("c3", "canvas 3", 1200, 800); B_CTAU_ps_frame.SetTitle(""); B_CTAU_ps_frame.Draw(); B_CTAU_ps_frame.GetXaxis().SetTitle("lifetime [ps]"); l2.Draw()
 set_label_large(sw_frame, c2); set_label_large(B_CTAU_ps_frame, c3)
 
-c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_sweights.jpg")
+c2.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_sweights.pdf")
 #c3.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_lifetime.pdf")
 #c4.SaveAs("/project/bfys/jrol/LHCb/figures/fitting/fit_test_mass_wpulls.pdf")
 input()
