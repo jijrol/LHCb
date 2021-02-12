@@ -1,15 +1,19 @@
-Colloquia Rug: 2 maal, geregistreerd.
-Nikhef Colloquium :     - 27 maart energy recovery in FCCee
+Colloquia RuG: twice registered.
 
-Topical Lectures on Higgs Physics:  - 17 June Experimental Status of Higgs Physics by Frank Filthaut (RU)
+Nikhef Colloquium - 27 March 
+	Energy recovery in FCCee, by Andreas Jankowiak (Helmholtz Centrum Berlin)
+	
+
+Topical Lectures on Higgs Physics - 17 June 
+	Experimental Status of Higgs Physics by Frank Filthaut (RU)
 	Different Higgs decay channels fit for measuring the Higgs properties: bb_bar decays as background, ZZ, WW YY channels as signal.
 	Interesting properties of the Higgs: Mass and branching fractions and spin/parity assumptions
 	Signs of new physics in gluon and photon loop contributions for for example a 4th quark generation 
 	Also covers Super symmetry in Higgs physics, showing that SuperSymmetry is being pushed towards the decoupling limit.
 
-PHYSSTAT-Flavour: - 19 oktober.
+PHYSSTAT-Flavour - 19 October
 	Several talks regarding the use of statistics in flavour physics.
-	First talk: Statistical issues in modern beauty and charm flavour physics experiments
+	First talk: Statistical issues in modern beauty and charm flavour physics experiments by Hans Peter Dembinski (Max Planck Institute)
 	The importance of using the best methods available by your scientific community, and promoting them. Practically speaking, things like systematic uncertainties should be treated consisted among LHCb analyses.
 	For example, there are theoretical deliberations favouring symmetric over asymmetric confidence intervals.
 	Setting limits on rare searches should be done with well defined coverage probability, and not yield unphysical intervals or limits. 3 sigma is the LHCb choice for reporting a signal rather than an upper limit.
@@ -17,16 +21,37 @@ PHYSSTAT-Flavour: - 19 oktober.
 	On systematic uncertainties: they can be either frequentist or Bayesian. How does one take into account discrete variations, as they cannot be modeled as a nuisance parameter in your confidence interval?
 	sPlot technique is popular in flavour physics, but indepenence of control variable and variable of interest is not easily shown. Showing a correlation ~0 is insufficient.
 	sPlotting with vanishing signals has some bias twoards a positive result, or should allow negative results but results in a less stable fitting procedure.
-	Seconds talk: systematic uncertainties in practice. 4 examples are discussed for ATLAS, CMS and LHCb. 3 types of systematic errors: explicit, implicit and discrete.
+	Seconds talk by Roger Barlow (University of Huddersfielf)
+	Systematic uncertainties in practice. 4 examples are discussed for ATLAS, CMS and LHCb. 3 types of systematic errors: explicit, implicit and discrete.
 	Often systematic errors are inflated in order to be on the safe side. This does yield a wrong confidence interval.
 
-Nikhef Colloquium december 4:
+Nikhef Colloquium - December 4 
+	Key Results from the Second Gravitational-wave Transient Catalog by Sarah Caudill (NIKHEF):
 	LIGO and VIRGO gravitational wave detections. An updated catalog is published of GW detections. First time an Intermediate Black Hole formation has been observed of 142 solar masses.
 	Shows evidence of higher multipole gravitational wave production, rather than the standard quarupole GW's.
 	Parameter Estimation from the black hole merger catalogue: no significant precession measured in mergers so far.
 	Also some localization in the sky can be done, depending on the quality of the GW form.
 	Observed total masses can give us information on Black Hole mass population
 	Merger rates might vary with redshift, although inconclusive results for now. 
+
+############## Previous colloquia revisited online. #####################################################
+
+University of Toronto Colloquium - February 27
+	The surprising case of CFC-11: Have we fallen off the path to ozone layer recovery? by Steve Montzka (NOAA)
+	Ozone layer above Antartica not regenerating at the rate it used to some decades ago. Montreal Protocol for elimination of ozone destroying chemicals deemed very succesful, so what is going wrong?
+	Concentration of ODS's does not decline at expected rate given no more is produced. Question is whether it's a production discrepancy or wrong assumptions regarding the lifetime of chemicals
+	Clues point at the production of ChloroFluoroCarbons (CFC) in China. China is actively involved in detecting and prosecuting those businesses that have started using CFC's again.
+	Their efforts have not found nearly enough evidence to explain the detected increase in emissions.
+
+Physics @ Berkely - November 9
+	COVID-19: Pandemics, history and science by Evelynn Hammonds (Harvard University)
+	Pandemics can be seen as sampling devices of the values and working of societies and cultures. Pandemics reveal the inequalities in societies.
+	Covid-19 Pandemic has disproportionally affected black communities. This is because of disparities in underlying conditions, wealth, treatment and so on. This has been an aspect of all pandemics studied from the 18th century onward.
+	The rate at which people of colour died because of past pandemics seemed to prove that they could not care for themselves, providing arguments for pro-slavers.
+	Some have tried to point at biological differences to explain the health gap between white people and people of colour, when (institutional) racisim is the underlying cause.
+
+
+	
 	
 
 

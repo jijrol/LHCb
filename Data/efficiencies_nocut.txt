@@ -1,0 +1,15 @@
+For particle 'B+' with m = 5279.33 MeV/c^2 and tau = 1.638 ps
+Run 3: Efficiency of >= 1 sensors = (0.18154 +/- 0.00135)%
+Run 2: Efficiency of >= 1 sensors = (0.04976 +/- 0.00071)%
+
+For particle 'Bc+' with m = 6274.9 MeV/c^2 and tau = 0.51 ps
+Run 3: Efficiency of >= 1 sensors = (0.00121 +/- 0.00011)%
+Run 2: Efficiency of >= 1 sensors = (0.00017 +/- 0.00004)%
+
+For particle 'D+' with m = 1869.65 MeV/c^2 and tau = 1.04 ps
+Run 3: Efficiency of >= 1 sensors = (0.06970 +/- 0.00083)%
+Run 2: Efficiency of >= 1 sensors = (0.01622 +/- 0.00040)%
+
+For particle 'Ds+' with m = 1968.34 MeV/c^2 and tau = 0.504 ps
+Run 3: Efficiency of >= 1 sensors = (0.00399 +/- 0.00020)%
+Run 2: Efficiency of >= 1 sensors = (0.00066 +/- 0.00008)%
