@@ -15,15 +15,18 @@ const_c = 3e8*1e-12*1e3 # [mm/ps]
 const_m_bplus  = 5279.33 # [MeV/c^2]
 const_m_bcplus = 6274.9  # [MeV/c^2]
 const_m_dsplus = 1968.34 # [MeV/c^2]
+const_m_dplus  = 1869.65 # [MeV/c^2]
 const_t_bplus  = 1.638   # [ps]
 const_t_bcplus = 0.510   # [ps]
 const_t_dsplus = 0.504   # [ps]
+const_t_dplus  = 1.040   # [ps]
 
 # dictionary for particles
-partdict = { "B+"  : { "mass" : const_m_bplus,  "lifetime" : const_t_bplus,  "branchname" : "Bp_0",  "treename" : "Bu2taunu" }
-           , "Bc+" : { "mass" : const_m_bcplus, "lifetime" : const_t_bcplus, "branchname" : "Bcp_0", "treename" : "Bc2taunu" } 
-           , "Ds+" : { "mass" : const_m_dsplus, "lifetime" : const_t_dsplus, "branchname" : "Dsp_0", "treename" : "Ds2taunu" }}
-
+partdict = { "B+"  : { "mass" : const_m_bplus,  "lifetime" : const_t_bplus,  "branchname" : "Bp",  "treename" : "Bplus2tau2pipipi" }
+           , "Bc+" : { "mass" : const_m_bcplus, "lifetime" : const_t_bcplus, "branchname" : "Bcp", "treename" : "Bcplus2tau2pipipi" } 
+           , "Ds+" : { "mass" : const_m_dsplus, "lifetime" : const_t_dsplus, "branchname" : "Dsp", "treename" : "Dsplus2tau2pipipi" }
+           , "D+"  : { "mass" : const_m_dplus,  "lifetime" : const_t_dplus,  "branchname" : "Dp",  "treename" : "Dplus2tau2pipipi" }
+}
 # detector constants (for VELO upgrade I (VELO pix))
 rmin         =  5.1 if options.run == 3 else 8.0 # [mm]
 dz_module    = 30.0 # [mm] roughly, from normal VELO, should be little bit smaller for upgrade
@@ -34,7 +37,7 @@ name = options.particle
 mass = partdict[name]["mass"]
 lifetime = partdict[name]["lifetime"]
 branchname = partdict[name]["branchname"]
-
+run = options.run
 # formulas
 def z_active(p,eta,t=1.5,m=const_m_bplus):
     d=const_c*t*p/m
@@ -50,7 +53,7 @@ def nsensors(p,eta,t=1.5,m=5279.):
     return int(math.floor(n_act))
 
 # data
-treeloc = "/data/bfys/mvegh/chargedb_tracking/rapidsim"
+treeloc = "/data/bfys/jrol/RapidSim"
 f_tree = R.TFile.Open("{1}/{0}_tree.root".format(partdict[name]["treename"],treeloc))
 tree = f_tree.Get("DecayTree")
 
@@ -69,23 +72,25 @@ for i in range(nEvents):
     tree.GetEntry(i)
     p=getattr(tree,"{0}_P_TRUE".format(branchname)) # in GeV/c
     pt=getattr(tree,"{0}_PT_TRUE".format(branchname))
-    taupt=getattr(tree,"{0}_PT".format(branchname))
-    taup=getattr(tree,"{0}_P".format(branchname))
+    #taupt=getattr(tree,"{0}_PT".format(branchname))
+    #taup=getattr(tree,"{0}_P".format(branchname))
     eta = math.acosh(p/pt)
     tau = random.expovariate(1./lifetime)
     ns = nsensors(p*1000.,eta,tau,mass)
     ns = ns if ns<=nsensors_max else nsensors_max
     h_nsensors.Fill(ns)
-    if ns>0: 
-        h_nsensors_zerosup.Fill(ns)
-        h_pt_onesensor.Fill(taupt)
-        h_p_onesensor.Fill(taup)
+    if i%1000000 is 0:
+        print(i)
+    #if ns>0: 
+    #    h_nsensors_zerosup.Fill(ns)
+    #    h_pt_onesensor.Fill(taupt)
+    #    h_p_onesensor.Fill(taup)
     h_nsuff1.Fill(ns>=1)
-    h_nsuff2.Fill(ns>=2)
-    h_nsuff3.Fill(ns>=3)
+    #h_nsuff2.Fill(ns>=2)
+    #h_nsuff3.Fill(ns>=3)
 
-#print "For particle '{0}' with m = {1} MeV/c^2 and tau = {2} ps".format(name,mass,lifetime)
-#print "Efficiency of >= 1 sensors = ({0:.5f} +/- {1:.5f})%".format(h_nsuff1.GetMean()*100.,h_nsuff1.GetMeanError()*100.)
+print("For particle '{0}' with m = {1} MeV/c^2 and tau = {2} ps and run {3}".format(name,mass,lifetime, run))
+print("Run {2}: Efficiency of >= 1 sensors = ({0:.5f} +/- {1:.5f})%".format(h_nsuff1.GetMean()*100.,h_nsuff1.GetMeanError()*100., run))
 #print "Efficiency of >= 2 sensors = ({0:.5f} +/- {1:.5f})%".format(h_nsuff2.GetMean()*100.,h_nsuff2.GetMeanError()*100.)
 #print "Efficiency of >= 3 sensors = ({0:.5f} +/- {1:.5f})%".format(h_nsuff3.GetMean()*100.,h_nsuff3.GetMeanError()*100.)
 

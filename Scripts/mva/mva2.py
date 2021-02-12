@@ -13,12 +13,17 @@ def scale_list(factor, items):
         item.Scale(factor)
 
 # Import trees
-loc = "/data/bfys/jrol/RapidSim/{0}2tau2pipipi_noBTracking.root"
+loc_noB = "/data/bfys/jrol/RapidSim/{0}2tau2pipipi_noBTracking.root"
+loc_yeB = "/data/bfys/jrol/RapidSim/{0}2tau2pipipi_filtered.root"
 
-f_Dplus  = R.TFile.Open(loc.format("Dplus"));  Dplus_tree  = f_Dplus.Get("DecayTree")
-f_Dsplus = R.TFile.Open(loc.format("Dsplus")); Dsplus_tree = f_Dsplus.Get("DecayTree")
-f_Bplus  = R.TFile.Open(loc.format("Bplus"));  Bplus_tree  = f_Bplus.Get("DecayTree")
-f_Bcplus = R.TFile.Open(loc.format("Bcplus")); Bcplus_tree = f_Bcplus.Get("DecayTree")
+#f_Dplus  = R.TFile.Open(loc.format("Dplus"));  Dplus_tree  = f_Dplus.Get("DecayTree")
+#f_Dsplus = R.TFile.Open(loc.format("Dsplus")); Dsplus_tree = f_Dsplus.Get("DecayTree")
+
+
+f_Bplus_noB  = R.TFile.Open(loc_noB.format("Bplus"));  Bplus_tree_noB  = f_Bplus_noB.Get("DecayTree")
+f_Bplus_yeB  = R.TFile.Open(loc_yeB.format("Bplus"));  Bplus_tree_yeB  = f_Bplus_yeB.Get("DecayTree")
+f_Bcplus_noB = R.TFile.Open(loc_noB.format("Bcplus")); Bcplus_tree_noB = f_Bcplus_noB.Get("DecayTree")
+f_Bcplus_yeB = R.TFile.Open(loc_yeB.format("Bcplus")); Bcplus_tree_yeB = f_Bcplus_yeB.Get("DecayTree")
 
 #Dp_df...
 #Dsp_df = Dsplus_tree.pandas.df()
@@ -40,10 +45,10 @@ hPT_Dp = R.TH1F("hPT_Dp", "D^{+} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-
 hPT_Dsp = R.TH1F("hPT_Dsp", "D^{+}_{s} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 50, 0, 50)
 hPT_Bp = R.TH1F("hPT_Bp", "B^{+} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 50, 0, 50)
 hPT_Bcp = R.TH1F("hPT_Bcp", "B^{+}_{c} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 50, 0, 50)
-hMcorr_noBTracking_Dp = R.TH1F("hMcorr_noBTracking_Dp", "D^{+} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 50, 0, 9)
-hMcorr_noBTracking_Dsp = R.TH1F("hMcorr_noBTracking_Dsp", "D^{+}_{s} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 50, 0, 9)
-hMcorr_noBTracking_Bp = R.TH1F("hMcorr_noBTracking_Bp", "B^{+} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 50, 0, 9)
-hMcorr_noBTracking_Bcp = R.TH1F("hMcorr_noBTracking_Bcp", "B^{+}_{c} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 50, 0, 9)
+hMcorr_Bp_noB = R.TH1F("hMcorr_Bp_noB", "B^{+}", 50, 0, 9)
+hMcorr_Bcp_noB = R.TH1F("hMcorr_Bcp_noB", "B^{+}_{c}", 50, 0, 9)
+hMcorr_Bp_yeB = R.TH1F("hMcorr_Bp_yeB", "B^{+} w/ B-Tracking", 50, 0, 9)
+hMcorr_Bcp_yeB = R.TH1F("hMcorr_Bcp_yeB", "B^{+}_{c} w/ B-Tracking", 50, 0, 9)
 hBpTracking_nHits_Dp = R.TH1F("hBpTracking_nHits_Dp", "D^{+} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 8, 0.25, 4.25)
 hBpTracking_nHits_Dsp = R.TH1F("hBpTracking_nHits_Dsp", "D^{+}_{s} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 8, 0.25, 4.25)
 hBpTracking_nHits_Bp = R.TH1F("hBpTracking_nHits_Bp", "B^{+} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 8, 0.25, 4.25)
@@ -53,10 +58,10 @@ hangle_Dsp = R.TH1F("hangle_Dsp", "D^{+}_{s} #rightarrow #tau^{+} #rightarrow #p
 hangle_Bp = R.TH1F("hangle_Bp", "B^{+} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 50, 0, 3.0)
 hangle_Bcp = R.TH1F("hangle_Bcp", "B^{+}_{c} #rightarrow #tau^{+} #rightarrow #pi^{+} #pi^{-} #pi^{+}", 50, 0, 3.0)
 
-Dplus_tree.Draw("Mcorr_noBTracking>>hMcorr_noBTracking_Dp", "Mcorr_noBTracking < 9"); hMcorr_noBTracking_Dp.Scale(1/hMcorr_noBTracking_Dp.GetEntries())
-Dsplus_tree.Draw("Mcorr_noBTracking>>hMcorr_noBTracking_Dsp", "Mcorr_noBTracking < 9"); hMcorr_noBTracking_Dsp.Scale(1/hMcorr_noBTracking_Dsp.GetEntries())
-Bplus_tree.Draw("Mcorr_noBTracking>>hMcorr_noBTracking_Bp", "Mcorr_noBTracking < 9"); hMcorr_noBTracking_Bp.Scale(1/hMcorr_noBTracking_Bp.GetEntries())
-Bcplus_tree.Draw("Mcorr_noBTracking>>hMcorr_noBTracking_Bcp", "Mcorr_noBTracking < 9"); hMcorr_noBTracking_Bcp.Scale(1/hMcorr_noBTracking_Bcp.GetEntries())
+Bplus_tree_yeB.Draw("Mcorr>>hMcorr_Bp_yeB", "Mcorr < 9"); hMcorr_Bp_yeB.Scale(1/hMcorr_Bp_yeB.GetEntries())
+Bcplus_tree_yeB.Draw("Mcorr>>hMcorr_Bcp_yeB", "Mcorr < 9"); hMcorr_Bcp_yeB.Scale(1/hMcorr_Bcp_yeB.GetEntries())
+Bplus_tree_noB.Draw("Mcorr_noBTracking>>hMcorr_Bp_noB", "Mcorr_noBTracking < 9"); hMcorr_Bp_noB.Scale(1/hMcorr_Bp_noB.GetEntries())
+Bcplus_tree_noB.Draw("Mcorr_noBTracking>>hMcorr_Bcp_noB", "Mcorr_noBTracking < 9"); hMcorr_Bcp_noB.Scale(1/hMcorr_Bcp_noB.GetEntries())
 
 # Add flags for signal and background
 #Bp_df["flag"] = 1; Bcp_df["flag"] = 1
@@ -64,7 +69,7 @@ Bcplus_tree.Draw("Mcorr_noBTracking>>hMcorr_noBTracking_Bcp", "Mcorr_noBTracking
 
 #full_frame = pd.concat([Dp_df, Dsp_df, Bp_df, Bcp_df], ignore_index=True, sort=False)
 observables     = ["PT", "Mcorr", "BpTracking_nHits", "angle"]
-all_observables = ["P", "PT", "Mcorr", "BpTracking_nHits", "angle"] 
+a_observables = ["P", "PT", "Mcorr", "BpTracking_nHits", "angle"] 
 
 #train, test = train_test_split(full_frame, test_size=0.5)
 
@@ -86,56 +91,58 @@ print("Completed training")
 #probabilities2 = gbc2.predict_proba(test[all_observables])
 
 
-no_bkg_cut = 0.99119
-for i in range(len(test)-1):
-    P = test['P'].iloc[i]
-    PT = test['PT'].iloc[i]
-    Mcorr = test['Mcorr'].iloc[i]
-    nHits = test['BpTracking_nHits'].iloc[i]
-    angle = test['angle'].iloc[i]
-    hP_all.Fill(P)
-    hPT_all.Fill(PT)
-    hMcorr_all.Fill(Mcorr)
-    hnHits_all.Fill(nHits)
-    hangle_all.Fill(angle)
-    if test['flag'].iloc[i] < 1:
-    h2d_bkg.Fill(Mcorr, angle)
-        hP_bkg.Fill(P)
-        hPT_bkg.Fill(PT)
-        hMcorr_bkg.Fill(Mcorr)
-        hnHits_bkg.Fill(nHits)
-        hangle_bkg.Fill(angle) 
-    if test['flag'].iloc[i] > 0:
-        h2d_sig.Fill(Mcorr, angle)
-        hP_sig.Fill(P)
-        hPT_sig.Fill(PT)
-        hMcorr_sig.Fill(Mcorr)
-        hnHits_sig.Fill(nHits)
-        hangle_sig.Fill(angle)
-    if probabilities2[i, 1] >= no_bkg_cut:
-        pure_amount += 1
-        hP_pur.Fill(P)
-        hPT_pur.Fill(PT)
-        hMcorr_pur.Fill(Mcorr)
-        hnHits_pur.Fill(nHits)
-        hangle_pur.Fill(angle)
-print(pure_amount, total_amount, bkg_amount, sig_amount)
-#scale_list(1, [hP_all, hPT_all, hMcorr_all, hnHits_all, hangle_all])
-#scale_list(1, [hP_sig, hPT_sig, hMcorr_sig, hnHits_sig, hangle_sig])
-#scale_list(1, [hP_bkg, hPT_bkg, hMcorr_bkg, hnHits_bkg, hangle_bkg])
-#scale_list(1, [hP_pur, hPT_pur, hMcorr_pur, hnHits_pur, hangle_pur])
-stack = R.THStack("stack", "stack")
-R.gStyle.SetPalette(1); R.gStyle.SetOptStat(0); R.gStyle.SetOptTitle(0)
-ctemp = R.TCanvas("ctemp", "ctemp", 1200, 800)
+#no_bkg_cut = 0.99119
+#for i in range(len(test)-1):
+#    P = test['P'].iloc[i]
+#    PT = test['PT'].iloc[i]
+#    Mcorr = test['Mcorr'].iloc[i]
+#    nHits = test['BpTracking_nHits'].iloc[i]
+#    angle = test['angle'].iloc[i]
+#    hP_all.Fill(P)
+#    hPT_all.Fill(PT)
+#    hMcorr_all.Fill(Mcorr)
+#    hnHits_all.Fill(nHits)
+#    hangle_all.Fill(angle)
+#    if test['flag'].iloc[i] < 1:
+#    h2d_bkg.Fill(Mcorr, angle)
+#        hP_bkg.Fill(P)
+#        hPT_bkg.Fill(PT)
+#        hMcorr_bkg.Fill(Mcorr)
+#        hnHits_bkg.Fill(nHits)
+#        hangle_bkg.Fill(angle) 
+#    if test['flag'].iloc[i] > 0:
+#        h2d_sig.Fill(Mcorr, angle)
+#        hP_sig.Fill(P)
+#        hPT_sig.Fill(PT)
+#        hMcorr_sig.Fill(Mcorr)
+#        hnHits_sig.Fill(nHits)
+#        hangle_sig.Fill(angle)
+#    if probabilities2[i, 1] >= no_bkg_cut:
+#        pure_amount += 1
+#        hP_pur.Fill(P)
+#        hPT_pur.Fill(PT)
+#        hMcorr_pur.Fill(Mcorr)
+#        hnHits_pur.Fill(nHits)
+#        hangle_pur.Fill(angle)
+stack = R.THStack("stack", "B^{+}_{(c)} #rightarrow #tau #rightarrow #pi^{3}")
+R.gStyle.SetPalette(1); R.gStyle.SetOptStat(0)
+c1 = R.TCanvas("c1", "ctemp", 1200, 800)
+hMcorr_Bp_noB.SetLineColor(R.kBlue); hMcorr_Bp_noB.SetLineStyle(R.kDashed)
+hMcorr_Bp_yeB.SetLineColor(R.kBlue)
+hMcorr_Bcp_noB.SetLineColor(R.kRed); hMcorr_Bcp_noB.SetLineStyle(R.kDashed)
+hMcorr_Bcp_yeB.SetLineColor(R.kRed)
 
-stack.Add(hMcorr_noBTracking_Bp)
-stack.Add(hMcorr_noBTracking_Bcp)
-stack.Add(hMcorr_noBTracking_Dp)
-stack.Add(hMcorr_noBTracking_Dsp)
-stack.Draw("PLC HIST NOSTACK")
+stack.Add(hMcorr_Bp_noB)
+stack.Add(hMcorr_Bp_yeB)
+stack.Add(hMcorr_Bcp_noB)
+stack.Add(hMcorr_Bcp_yeB)
+stack.Draw("HIST NOSTACK")
 stack.GetXaxis().SetTitle("corrected mass (GeV/c^{2})")
 stack.GetYaxis().SetTitle("arbitrary units")
-Leg = ctemp.BuildLegend(0.55, 0.5, 0.89, 0.89); Leg.SetBorderSize(0)
+stack.SetMinimum(0.0005); stack.SetMaximum(0.1)
+Leg = c1.BuildLegend(0.25, 0.1, 0.55, 0.35); Leg.SetBorderSize(0)
+c1.SetLogy()
+c1.SaveAs("/project/bfys/jrol/LHCb/figures/selection/Mcorr_BTracking_comparison.pdf"); input()
 
 #c1 = R.TCanvas("c1", "c1", 1200, 800); c1.SetRightMargin(0.12)
 #h2d_sig.DrawNormalized("PLC COLZ"); h2d_sig.GetXaxis().SetTitle("M_{corr} (Gev/c)^{2}"); h2d_sig.GetYaxis().SetTitle("Opening angle in degrees")
@@ -143,7 +150,7 @@ Leg = ctemp.BuildLegend(0.55, 0.5, 0.89, 0.89); Leg.SetBorderSize(0)
 #hP_all.Draw("PLC HIST"); hP_sig.Draw("PLC SAME HIST")
 #hP_bkg.Draw("PLC SAME HIST"); hP_pur.Draw("PLC SAME HIST")
 #L1 = R.gPad.BuildLegend(0.65, 0.7, 0.9, 0.82); L1.SetBorderSize(0); h2d_sig.SetTitle("Corrected mass vs. opening angle, Signal & Background")
-ctemp.SaveAs("/project/bfys/jrol/LHCb/figures/mva/individual_Mcorr_noB.pdf"); ctemp.SetBottomMargin(0.1)
+#c1.SaveAs("/project/bfys/jrol/LHCb/figures/mva/individual_Mcorr_noB.pdf"); ctemp.SetBottomMargin(0.1)
 #hP_all.GetXaxis().SetTitle("Momentum (Gev/c)"); hP_all.GetYaxis().SetTitle("number in bin")
 #c2 = R.TCanvas("c2", "c2", 1200, 800); c2.SetRightMargin(0.12)
 #h2d_bkg.DrawNormalized("PLC COLZ"); h2d_bkg.GetXaxis().SetTitle("M_{corr} (Gev/c)^{2}"); h2d_bkg.GetYaxis().SetTitle("Opening angle in degrees")
@@ -173,7 +180,6 @@ ctemp.SaveAs("/project/bfys/jrol/LHCb/figures/mva/individual_Mcorr_noB.pdf"); ct
 #c3.SaveAs("/project/bfys/jrol/LHCb/figures/mva/Mcorr_pure.pdf")
 #c4.SaveAs("/project/bfys/jrol/LHCb/figures/mva/nHits_pure.pdf")
 #c5.SaveAs("/project/bfys/jrol/LHCb/figures/mva/angle_pure.pdf")
-input()
 
 #Determine preformance; roc curve, auc score.
 #fpr1, tpr1, thresholds1 = roc_curve(test["flag"], probabilities1[:, 1])
